@@ -1,5 +1,3 @@
-'use strict';
-
 const fs = require('fs');
 const isWsl = require('is-wsl');
 const path = require('path');
@@ -25,7 +23,8 @@ const getClientEnvironment = require('./env');
 const ModuleNotFoundPlugin = require('react-dev-utils/ModuleNotFoundPlugin');
 const ForkTsCheckerWebpackPlugin = require('react-dev-utils/ForkTsCheckerWebpackPlugin');
 const typescriptFormatter = require('react-dev-utils/typescriptFormatter');
-const eslint = require('eslint');
+// const eslint = require('eslint');
+const { styles } = require('@ckeditor/ckeditor5-dev-utils');
 
 const postcssNormalize = require('postcss-normalize');
 
@@ -334,6 +333,30 @@ module.exports = function(webpackEnv) {
       strictExportPresence: true,
       rules: [
         // Disable require.ensure as it's not a standard language feature.
+        {
+          test: /ckeditor5-[^/\\]+[/\\]theme[/\\]icons[/\\][^/\\]+\.svg$/,
+          use: ['raw-loader']
+        },
+        {
+          test: /ckeditor5-[^/\\]+[/\\]theme[/\\].+\.css/,
+          use: [
+            {
+              loader: 'style-loader',
+              options: {
+                injectType: 'singletonStyleTag'
+              }
+            },
+            {
+              loader: 'postcss-loader',
+              options: styles.getPostCssConfig({
+                themeImporter: {
+                  themePath: require.resolve('@ckeditor/ckeditor5-theme-lark')
+                },
+                minify: true
+              })
+            }
+          ]
+        },
         { parser: { requireEnsure: false } },
 
         // First, run the linter.
@@ -440,7 +463,7 @@ module.exports = function(webpackEnv) {
             // By default we support CSS Modules with the extension .module.css
             {
               test: cssRegex,
-              exclude: cssModuleRegex,
+              exclude: /ckeditor5-[^/\\]+[/\\]theme[/\\].+\.css/,
               use: getStyleLoaders({
                 importLoaders: 1,
                 sourceMap: isEnvProduction && shouldUseSourceMap,
@@ -506,7 +529,12 @@ module.exports = function(webpackEnv) {
               // its runtime that would otherwise be processed through "file" loader.
               // Also exclude `html` and `json` extensions so they get processed
               // by webpacks internal loaders.
-              exclude: [/\.(js|mjs|jsx|ts|tsx)$/, /\.html$/, /\.json$/],
+              exclude: [
+                /\.(js|jsx|mjs)$/,
+                /\.html$/,
+                /\.json$/,
+                /ckeditor5-[^/\\]+[/\\]theme[/\\]icons[/\\][^/\\]+\.svg$/,
+                /ckeditor5-[^/\\]+[/\\]theme[/\\].+\.css/],
               options: {
                 name: 'static/media/[name].[hash:8].[ext]',
               },
