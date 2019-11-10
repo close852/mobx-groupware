@@ -23,22 +23,21 @@ router.get('/:id', async (req, res) => {
 //게시판 조회
 router.get('/', async (req, res) => {
     const {
+        // orderBy,
+        // sortType,
+        // pageSize,
+        // page,
         bbs_id
-    } = req.params;
-    const {
-        orderBy,
-        sortType,
-        pageSize,
-        page
     } = req.query;
-    console.log('req.params >>>>> ', req.params)
-    const paging = {
-        orderBy,
-        sortType,
-        startWith: (Number(page) - 1) * pageSize,
-        pageSize
-    }
-    const result = await articleDAO.findArticleByBbsId(bbs_id, paging);
+    console.log('req.params >>>>> ', req.query)
+    // const paging = {
+    //     orderBy,
+    //     sortType,
+    //     startWith: (Number(page) - 1) * pageSize,
+    //     pageSize: pageSize?pageSize:'0'
+    // }
+    console.log('req.query > ',paging(req.query), req.query)
+    const result = await articleDAO.findArticleByBbsId(bbs_id, paging(req.query));
     return res.json({
         data: result
     })
@@ -114,5 +113,16 @@ router.put('/:id', async (req, res) => {
     })
 })
 
+const paging = ({orderBy, sortType,page, pageSize, startWith})=>{
+    page = page?page:1;
+    pageSize = pageSize?pageSize:10;
+    console.log('page',page);
+    return {
+        orderBy,
+        sortType,
+        pageSize,
+        startWith: (Number(page) - 1) * pageSize,
+    }
+}
 
 export default router;
