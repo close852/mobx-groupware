@@ -1,6 +1,8 @@
 /* store/index.js */
-import viewStore from './viewStore';
+import ArticleStore from './ArticleStore'
+import LeftMenuStore from './LeftMenuStore'
 
 export default {
-  viewStore,
+  ArticleStore: new ArticleStore(),
+  LeftMenuStore: new LeftMenuStore()
 }

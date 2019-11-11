@@ -8,10 +8,7 @@ import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 import InboxIcon from '@material-ui/icons/MoveToInbox';
 import MailIcon from '@material-ui/icons/Mail';
-// import Collapse from '@material-ui/core/Collapse';
-// import StarBorder from '@material-ui/icons/StarBorder';
-// import ExpandLess from '@material-ui/icons/ExpandLess';
-// import ExpandMore from '@material-ui/icons/ExpandMore';
+
 import AccountCircle from '@material-ui/icons/AccountCircle';
 
 function RightMenu({ history }) {
@@ -49,6 +46,7 @@ function RightMenu({ history }) {
             menuName: "전자결재",
             sortno: 1,
             link: '/app/todolist',
+            default: '',
             count: 1
         },
         {
@@ -56,7 +54,8 @@ function RightMenu({ history }) {
             menuId: "menu2",
             menuName: "게시판",
             sortno: 1,
-            link: '/bbs/list',
+            link: '/bbs/list',//default 설정
+            default: '?bbs_id=1',
             count: 2
         },
         {
@@ -64,7 +63,8 @@ function RightMenu({ history }) {
             menuId: "menu3",
             menuName: "대화함",
             sortno: 1,
-            link: '/app/todolist',
+            default: '',
+            link: '/chatbox/list',
             count: 2
         },
     ]
@@ -85,7 +85,7 @@ function RightMenu({ history }) {
                 <div className={classes.toolbar} />
                 <List>
                     {menus.map((menu, index) => (
-                        <ListItem button key={menu.menuId} onClick={() => { history.push(menu.link) }}>
+                        <ListItem button key={menu.menuId} onClick={() => { history.push(menu.link + '' + menu.default) }}>
                             <ListItemIcon>{index % 2 === 0 ? <InboxIcon /> : <MailIcon />}</ListItemIcon>
                             <ListItemText primary={menu.menuName} />
                         </ListItem>
