@@ -29,18 +29,16 @@ router.get('/', async (req, res) => {
         // page,
         bbs_id
     } = req.query;
-    console.log('req.params >>>>> ', req.query)
+    console.log('req.params >>>>> ', req.query, req.body)
     // const paging = {
     //     orderBy,
     //     sortType,
     //     startWith: (Number(page) - 1) * pageSize,
     //     pageSize: pageSize?pageSize:'0'
     // }
-    console.log('req.query > ',paging(req.query), req.query)
-    const result = await articleDAO.findArticleByBbsId(bbs_id, paging(req.query));
-    return res.json({
-        data: result
-    })
+    console.log('req.query > ', paging(req.query), req.query)
+    const result = await articleDAO.findArticleByBbsId(bbs_id);
+    return res.send(result)
 })
 
 
@@ -113,10 +111,10 @@ router.put('/:id', async (req, res) => {
     })
 })
 
-const paging = ({orderBy, sortType,page, pageSize, startWith})=>{
-    page = page?page:1;
-    pageSize = pageSize?pageSize:10;
-    console.log('page',page);
+const paging = ({ orderBy, sortType, page, pageSize, startWith }) => {
+    page = page ? page : 1;
+    pageSize = pageSize ? pageSize : 10;
+    console.log('page', page);
     return {
         orderBy,
         sortType,

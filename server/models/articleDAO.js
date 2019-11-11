@@ -12,14 +12,19 @@ const deleteArticleById = async (articleId) => {
 
     return db.query(sql, args).catch(err => err);
 }
-const findArticleByBbsId = (bbs_id, paging) => {
-    const orderBy = paging.orderBy && escape(paging.orderBy);
-    const sortType = (paging.sortType && escape(paging.sortType)) || '';
-    const startWith = Number(paging.startWith);
-    const size = Number(paging.pageSize);
-    const order = (paging.orderBy && ('ORDER BY ' + orderBy + ' ' + sortType)) || '';
-    let sql = ` SELECT * FROM ARTICLE WHERE BBS_ID = ? ${order} LIMIT ?, ?`;
-    let args = [bbs_id, startWith, size];
+// const findArticleByBbsId = (bbs_id, paging) => {
+//     const orderBy = paging.orderBy && escape(paging.orderBy);
+//     const sortType = (paging.sortType && escape(paging.sortType)) || '';
+//     const startWith = Number(paging.startWith);
+//     const size = Number(paging.pageSize);
+//     const order = (paging.orderBy && ('ORDER BY ' + orderBy + ' ' + sortType)) || '';
+//     let sql = ` SELECT * FROM ARTICLE WHERE BBS_ID = ? ${order} LIMIT ?, ?`;
+//     let args = [bbs_id, startWith, size];
+//     return db.query(sql, args).catch(err => err);
+// }
+const findArticleByBbsId = (bbs_id) => {
+    let sql = ` SELECT * FROM ARTICLE WHERE BBS_ID = ?`;
+    let args = [bbs_id];
     return db.query(sql, args).catch(err => err);
 }
 

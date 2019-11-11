@@ -19,14 +19,14 @@ const app = express();
 const PORT = process.env.PORT || 4000;
 
 /* LOG */
-const accessLogStream = fs.createWriteStream(path.join(__dirname, 'logs/access.log'), {
-    flags: 'a'
-})
+// const accessLogStream = fs.createWriteStream(path.join(__dirname, 'logs/access.log'), {
+//     flags: 'a'
+// })
 
 /* applyMiddleware */
-app.use(logger('combined', {
-    stream: accessLogStream
-}))
+// app.use(logger('combined', {
+//     stream: accessLogStream
+// }))
 app.use('/', express.static(path.join(__dirname, './../public')))
 app.use(session({
     secret: 'mw',
