@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 import clsx from 'clsx';
 import { lighten, makeStyles } from '@material-ui/core/styles';
@@ -18,9 +18,7 @@ import Tooltip from '@material-ui/core/Tooltip';
 // import FormControlLabel from '@material-ui/core/FormControlLabel';
 // import Switch from '@material-ui/core/Switch';
 import DeleteIcon from '@material-ui/icons/Delete';
-import FilterListIcon from '@material-ui/icons/FilterList';
 import { NavLink } from 'react-router-dom'
-import axios from 'axios'
 
 function ListFrame({ menuName, rows, headCells, linkUrl }) {
 
@@ -281,9 +279,6 @@ function ListFrame({ menuName, rows, headCells, linkUrl }) {
 
     const emptyRows = rowsPerPage - Math.min(rowsPerPage, rows.length - page * rowsPerPage);
 
-    const viewBbs = (bbsId) => {
-        alert(bbsId);
-    }
     return (
         <div className={classes.root}>
             <Paper className={classes.paper}>

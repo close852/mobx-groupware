@@ -13,10 +13,10 @@ class ArticleStore {
     ];
 
     getArticle = (bbs_id) => {
-        console.log('getArticles > ' + bbs_id)
+        // console.log('getArticles > ' + bbs_id)
         axios.get(`/api/article?bbs_id=${bbs_id}`)
             .then(res => {
-                console.log('getArticles > ', res.data);
+                // console.log('getArticles > ', res.data);
                 // this.setArticle(res);
                 // this.articles = res.data;
                 this.articles = res.data.map(article => (

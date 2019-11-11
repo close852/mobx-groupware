@@ -24,34 +24,46 @@ let findAppById = async (app_id) => {
 /**
  * 미결문서함
  */
-const findAllTodoList = (user_id, paging) => {
-    let sql = ` SELECT * FROM V_TODOLIST WHERE curr_user_id = ? ${paging.orderBy} LIMIT ?, ?`;
-    let args = [user_id, (paging.startWith), (paging.size)];
-    return db.query(sql, args).catch(err => err);
+const findAllTodoList = (user_id) => {
+    let sql = ` SELECT * FROM V_TODOLIST WHERE curr_user_id = ? `;
+    let args = [user_id ];
+    try {
+        return db.query(sql, args).catch(err => err);
+    } catch (err) {
+        return err;
+    }
 }
 
 /**
  * 진행문서함
  */
-const findAllProcessList = (user_id, paging) => {
-    let sql = ` SELECT * FROM V_PROCESSLIST WHERE auth_id = ?  ${paging.orderBy} LIMIT ?, ?`;
-    let args = [user_id, (paging.startWith), (paging.size)];
-    return db.query(sql, args).catch(err => err);
+const findAllIngList = (user_id) => {
+    let sql = ` SELECT * FROM V_INGLIST WHERE auth_id = ?  `;
+    let args = [user_id];
+    try {
+        return db.query(sql, args).catch(err => err);
+    } catch (err) {
+        return err;
+    }
 }
 
 /**
  * 완료문서함
  */
-const findAllEndList = (user_id, paging) => {
-    let sql = ` SELECT * FROM V_ENDLIST WHERE auth_id = ? ${paging.orderBy} LIMIT ?, ?`;
-    let args = [user_id, (paging.startWith), (paging.size)];
-    return db.query(sql, args).catch(err => err);
+const findAllEndList = (user_id) => {
+    let sql = ` SELECT * FROM V_ENDLIST WHERE auth_id = ?`;
+    let args = [user_id];
+    try {
+        return db.query(sql, args).catch(err => err);
+    } catch (err) {
+        return err;
+    }
 }
 
 export default ({
     findAppById,
     insertApp,
     findAllTodoList,
-    findAllProcessList,
+    findAllIngList,
     findAllEndList
 })

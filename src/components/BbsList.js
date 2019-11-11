@@ -8,7 +8,7 @@ class BbsList extends Component {
     componentDidMount() {
         let store = this.props.ArticleStore;
         const query = queryString.parse(this.props.location.search);
-        console.log(query)
+        // console.log(query)
         store.getArticle(query.bbs_id);
         // console.log('data >> ', data);
         // console.log(store.articles)
@@ -21,7 +21,7 @@ class BbsList extends Component {
     render() {
         const { menuName, linkUrl } = this;
         const { articles, headCells } = this.props.ArticleStore;
-        console.log('articles', articles);
+        // console.log('articles', articles);
         return (
             <div>
                 <ListFrame menuName={menuName} linkUrl={linkUrl} rows={articles} headCells={headCells} />

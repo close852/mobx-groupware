@@ -12,10 +12,10 @@ class LeftMenuStore {
     ];
 
     getLeftMenu = (group_id) => {
-        console.log('getArticles > ' + group_id)
+        // console.log('getArticles > ' + group_id)
         axios.get(`/api/menu?group_id=${group_id}`)
             .then(res => {
-                console.log('getLeftMenu > ', res.data);
+                // console.log('getLeftMenu > ', res.data);
                 // this.setArticle(res);
                 // this.articles = res.data;
                 // this.leftMenu = res.data.map(article => (
