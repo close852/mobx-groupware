@@ -1,5 +1,5 @@
 
-import React from 'react';
+import React, { Fragment } from 'react';
 import PropTypes from 'prop-types';
 import Button from '@material-ui/core/Button';
 import { makeStyles } from '@material-ui/core/styles';
@@ -15,10 +15,18 @@ function MWFileReader({ accept, capture, multiple, fileQueue, setFileQueue }) {
         input: {
             display: 'none',
         },
+        sizeBar: {
+            textAlign: 'right'
+        },
+        container: {
+            width: '100%',
+            height: '100%'
+        },
     }));
     const classes = useStyles();
 
     const styles = {
+
         root: {
             display: 'flex',
             width: '100%',
@@ -47,13 +55,14 @@ function MWFileReader({ accept, capture, multiple, fileQueue, setFileQueue }) {
             height: '15px'
         },
         fileItem: {
-            width:'100%',
-            display:'flex',
-            flexBasis:'auto'
+            width: '100%',
+            display: 'flex',
+            flexBasis: 'auto'
         },
         fileTitle: {
-            width:'100%',
-        }
+            width: '100%',
+        },
+
 
     }
 
@@ -155,15 +164,15 @@ function MWFileReader({ accept, capture, multiple, fileQueue, setFileQueue }) {
                 <label htmlFor="contained-button-file">
                     <Button variant="outlined" component="span" className={classes.button}>
                         +
-                    </Button>
+                        </Button>
                 </label>
                 {/* <button style={styles.button} onClick={removeFileHandler}>-</button> */}
                 {/* <span onClick={removeFileHandler}>-</span> */}
                 <Button variant="outlined" component="span" className={classes.button} onClick={removeFileHandler}>
                     -
-                </Button>
-
+                    </Button>
             </div>
+            {/*<div className={classes.sizeBar}>x개 | n MB/max MB</div> */}
         </div>
     );
 }

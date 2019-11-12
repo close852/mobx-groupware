@@ -12,6 +12,8 @@ import Collapse from '@material-ui/core/Collapse';
 import StarBorder from '@material-ui/icons/StarBorder';
 import ExpandLess from '@material-ui/icons/ExpandLess';
 import ExpandMore from '@material-ui/icons/ExpandMore';
+import Button from '@material-ui/core/Button';
+
 //tree-util 이걸로 해결 할 수 있을지도 모름.
 
 function LeftMenu({ history }) {
@@ -29,6 +31,15 @@ function LeftMenu({ history }) {
         nested: {
             paddingLeft: theme.spacing(4),
         },
+        writeMenu: {
+            width: '100%',
+            display: 'flex',
+            justifyContent: 'center'
+        },
+        button: {
+            width: '100%',
+            margin: theme.spacing(1),
+        },
 
     }));
 
@@ -42,15 +53,17 @@ function LeftMenu({ history }) {
         setOpen2(!open2);
     }
 
+    const WriteMenu = {
+        menuGroup: "App",
+        menuId: "qweasdasdasd0",
+        menuName: "문서작성",
+        sortno: 1,
+        link: '/app/forms',
+        divider: 'N'
+    }
+
     const menus = [
-        {
-            menuGroup: "App",
-            menuId: "qweasdasdasd0",
-            menuName: "문서작성",
-            sortno: 1,
-            link: '/app/forms',
-            divider: 'N'
-        },
+
         {
             menuGroup: "App",
             menuId: "qweasdasdasd1",
@@ -108,6 +121,12 @@ function LeftMenu({ history }) {
             >
                 <div className={classes.toolbar} />
                 <List>
+                    <div className={classes.writeMenu}>
+                        <Button variant="contained" color="secondary" size="large" className={classes.button} onClick={() => { history.push(WriteMenu.link) }}>
+                            {WriteMenu.menuName}
+                        </Button>
+                    </div>
+
                     {menus.map((menu, index) => (
                         <div>
                             {menu.divider === "Y" && <Divider />}
