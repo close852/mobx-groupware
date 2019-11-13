@@ -1,10 +1,8 @@
 import React from 'react';
-import queryString from 'query-string';
 import AppButton from './AppButton';
 import { makeStyles } from '@material-ui/core/styles';
 
 function AppView({ location }) {
-    const query = queryString.parse(location.search);
     const content = '';
     // async componentDidMount() {
     //     console.log('query', this.query)

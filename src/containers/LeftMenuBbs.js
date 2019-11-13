@@ -51,7 +51,7 @@ function LeftMenuBbs({ history }) {
             menuId: "qweasdasdasd1",
             menuName: "공지사항",
             sortno: 1,
-            link: '/bbs/list?bbs_id=1',
+            link: '/bbs/list/1',
             divider: 'N'
         },
         {
@@ -59,7 +59,7 @@ function LeftMenuBbs({ history }) {
             menuId: "test2",
             menuName: "자유게시판",
             divider: 'N',
-            link: '/bbs/list?bbs_id=2',
+            link: '/bbs/list/2',
 
         }
     ]

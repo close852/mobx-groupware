@@ -192,6 +192,8 @@ function ArticleView({ history, location, match }) {
                 <form id="bbsForm" name="bbsForm" onSubmit={handleSubmit} >
                     <input type="hidden" id="nexturl" name="nexturl" value={`/bbs/list?bbs_id=${bbsId}`} />
                     <input type="hidden" id="article_id" name="article_id" value={articleId} />
+                    <input type="hidden" id="user_id" name="user_id" value={userId} />
+
 
                     <div>
                         <FormControl variant="outlined" className={classes.formControl}>

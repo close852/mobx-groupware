@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import ListFrame from './ListFrame'
-import queryString from "query-string";
 import { observer, inject } from 'mobx-react';
 
 class AppList extends Component {

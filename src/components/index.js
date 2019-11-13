@@ -1,7 +1,7 @@
 export { default as SignIn } from './SignIn'
 export { default as SignUp } from './SignUp'
 export { default as AppList } from './AppList'
-export { default as BbsList } from './BbsList'
+export { default as ArticleList } from './ArticleList'
 export { default as FormList } from './FormList'
 export { default as BbsView } from './BbsView'
 export { default as AppView } from './AppView'

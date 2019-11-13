@@ -5,7 +5,7 @@ import CssBaseline from '@material-ui/core/CssBaseline';
 
 import { makeStyles } from '@material-ui/core/styles';
 import { Header, LeftMenu, RightMenu, Footer } from 'containers'
-import { SignIn, SignUp, AppList, BbsList, FormList, AppView, BbsView, ArticleView } from 'components';
+import { SignIn, SignUp, AppList, ArticleList, FormList, AppView, ArticleView } from 'components';
 // const drawerWidth = 240;
 const useStyles = makeStyles(theme => ({
 
@@ -51,12 +51,10 @@ function App() {
           <Route path="/app/forms" component={FormList}></Route>
           <Route path="/app/todolist" component={AppList}></Route>
           <Route path="/app/processlist" component={AppList}></Route>
-          <Route path="/app/endlist" component={BbsList}></Route>
-          <Route path="/bbs/list" component={BbsList}></Route>
+          <Route path="/app/endlist" component={AppList}></Route>
+          <Route path="/bbs/list/:id" component={ArticleList}></Route>
           <Route exact path="/article" component={ArticleView}></Route>
           <Route path="/article/:id" component={ArticleView}></Route>
-
-          <Route exact path="/bbs/view" component={BbsView}></Route>
         </Switch>
       </main>
 
