@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect, useCallback, Fragment } from 'react'
 import MWEditor from 'components/editor/MWEditor'
 import MWFileReader from 'components/file/MWFileReader'
 import Button from '@material-ui/core/Button';
@@ -8,13 +8,65 @@ import InputLabel from '@material-ui/core/InputLabel';
 import TextField from '@material-ui/core/TextField';
 import { makeStyles } from '@material-ui/core/styles';
 import axios from 'axios'
-function ArticleView() {
+import queryString from "query-string";
+//https://rinae.dev/posts/a-complete-guide-to-useeffect-ko
+function ArticleView({ history, location }) {
+
+    const query = queryString.parse(location.search);
+
+    const [bbsList, setBbsList] = useState([]);
+    const bbsListMap = bbsList.map((bbs) => (
+        console.log('bbs', bbs.bbs_id, bbs.name)
+    ));
+    const [articleId, setArticleId] = useState('');
+    const [title, setTitle] = useState('');
     const [content, setContent] = useState('');
+    const [bbsId, setBbsId] = useState('');
+    const [userId, setUserId] = useState('');
+
     const [fileQueue, setFileQueue] = useState([]);
-    const [bbsId, setBbsId] = useState([]);
 
+    const [editMode, setEditMode] = useState(false);
 
-    const mode = 'edit';// 'edit'!=='edit';
+    const getArticleFetchUrl = useCallback(() => {
+        return axios.get(`/api/article/${query.article_id}`);
+    }, [query.article_id]);  // ✅ 콜백 deps는 OK
+
+    const getBbsFetchUrl = useCallback(() => {
+        return axios.get(`/api/bbs`);
+    }, []);  // ✅ 콜백 deps는 OK
+
+    useEffect(() => {
+        const bbsData = getBbsFetchUrl();
+        bbsData.then(res => {
+            console.log('bbsData > res.data', res.data)
+            setBbsList(res.data);
+        })
+
+        if (location.search) {
+            const articleData = getArticleFetchUrl();
+            articleData.then(res => {
+                const article = res.data[0];
+                if (article) {
+                    console.log(article)
+                    setContent(article.content);
+                    setTitle(article.title);
+                    setBbsId(article.bbs_id);
+                    setUserId(article.user_id);
+                    setArticleId(article.article_id);
+
+                }
+            })
+        } else {
+            setEditMode(true);
+        }
+        // ... 데이터를 불러와서 무언가를 한다 ...
+    }, [getArticleFetchUrl, getBbsFetchUrl, location.search]); // ✅ 이펙트의 deps는 OK
+
+    // FORM DATA
+    const writer = "1";
+    const dept_id = "1";
+
     const drawerWidth = 240;
     const changeBbsId = (e) => {
         setBbsId(e.target.value)
@@ -78,6 +130,7 @@ function ArticleView() {
         console.log('handleTempSave');
     }
     const handleSubmit = (e) => {
+        console.log('handleSubmit >> ')
         e.preventDefault();
         // console.log('handleSubmit',e.target);
         // console.log(data,e.target.writer,e.target.title.value);
@@ -89,23 +142,61 @@ function ArticleView() {
         })
         console.log(data.entries());
         for (var pair of data.entries()) {
-            console.log(pair[0] + ',, ' + pair[1]);
+            console.log(pair[0] + ', ' + pair[1]);
         }
 
-        axios.post('/api/article', data)
+        // axios.post('/api/article', data)
+        //     .then(res => {
+        //         console.log(res)
+        //         if (res.data) {
+        //             history.push(res.data.nexturl);
+        //         }
+        //     });
+    }
+    const handleModify = (e) => {
+        console.log('handleModify eeee > ', e)
+        e.preventDefault();
+        const form = document.bbsForm;
+        const data = new FormData(form);
+        console.log(data.entries());
+        for (var pair of data.entries()) {
+            console.log(pair[0] + ', ' + pair[1]);
+        }
+
+        axios.put(`/api/article/${articleId}`, data)
             .then(res => {
                 console.log(res)
+                if (res.data) {
+                    history.push(res.data.nexturl);
+                }
             });
-    }
 
+    }
+    const handleDelete = (e) => {
+        console.log('handleDelete > ')
+        e.preventDefault();
+        const form = document.bbsForm;
+        const data = new FormData(form);
+        axios.delete('/api/article', data)
+            .then(res => {
+                console.log(res)
+                if (res.data) {
+                    history.push(res.data.nexturl);
+                }
+            });
+
+    }
     return (
         <div className={classes.root}>
             <div className={classes.body}>
-                <form id="bbsForm" name="bbsForm" onSubmit={handleSubmit}>
+                <form id="bbsForm" name="bbsForm" onSubmit={handleSubmit} >
+                    <input type="hidden" id="nexturl" name="nexturl" value={`/bbs/list?bbs_id=${bbsId}`} />
+                    <input type="hidden" id="article_id" name="article_id" value={articleId} />
+
                     <div>
                         <FormControl variant="outlined" className={classes.formControl}>
                             <InputLabel htmlFor="bbs-select" style={{ backgroundColor: 'white' }}>
-                                게시판
+                                게시판 {bbsListMap}
                             </InputLabel>
                             <Select
                                 native
@@ -113,13 +204,16 @@ function ArticleView() {
                                 onChange={changeBbsId}
                                 // labelWidth={labelWidth}
                                 inputProps={{
-                                    name: 'bbsid',
+                                    name: 'bbs_id',
                                     id: 'bbs-select',
                                 }}
                             >
                                 <option value="" />
-                                <option value={10}>공지사항</option>
-                                <option value={20}>자유게시판</option>
+                                {
+                                    bbsList.map(bbs => (
+                                        <option value={bbs.bbs_id}>{bbs.name}</option>
+                                    ))
+                                }
                             </Select>
                         </FormControl>
                         <TextField
@@ -146,13 +240,15 @@ function ArticleView() {
                                 readOnly: true,
                             }}
                         />
-                        <input type="hidden" id="writer" name="writer" value="jiwoo" />
-                        <input type="hidden" id="deptid" name="deptid" value="DEPT01" />
+                        <input type="hidden" id="writer" name="writer" value={writer} />
+                        <input type="hidden" id="dept_id" name="dept_id" value={dept_id} />
                         <div>
                             <TextField
                                 id="title"
                                 name="title"
                                 label="문서제목"
+                                value={title}
+                                onChange={(e) => { setTitle(e.target.value); }}
                                 className={classes.textField}
                                 margin="normal"
                                 variant="outlined" />
@@ -160,15 +256,25 @@ function ArticleView() {
                     </div>
                     <div id="_editor" className={classes.editor}>
                         <input type="hidden" id="content" name="content" value={content} />
-                        <MWEditor mode={mode} content={content} setContent={setContent} />
+                        <MWEditor mode={editMode} content={content} setContent={setContent} />
                     </div>
                     <div id="fileAttach" className={classes.fileattach}>
                         <MWFileReader fileQueue={fileQueue} setFileQueue={setFileQueue} />
                     </div>
                     <div className={classes.buttonInc}>
-                        <Button variant="contained" color="default" className={classes.button} onClick={handlePreview}>미리보기</Button>
-                        <Button variant="contained" color="default" className={classes.button} onClick={handleTempSave}>임시저장</Button>
-                        <Button variant="contained" type="submit" color="secondary" className={classes.button} >글쓰기</Button>
+                        {editMode &&
+                            <Fragment>
+                                <Button variant="contained" type="submit" color="default" className={classes.button} onClick={handlePreview}>미리보기</Button>
+                                <Button variant="contained" type="submit" color="default" className={classes.button} onClick={handleTempSave}>임시저장</Button>
+                                <Button variant="contained" type="submit" color="secondary" className={classes.button} >글쓰기</Button>
+                            </Fragment>
+                        }
+                        {!editMode &&
+                            <Fragment>
+                                <Button variant="contained" type="submit" color="secondary" className={classes.button} onClick={handleModify}>수정</Button>
+                                <Button variant="contained" type="submit" color="default" className={classes.button} onClick={handleDelete}>삭제</Button>
+                            </Fragment>
+                        }
                     </div>
                 </form>
             </div>

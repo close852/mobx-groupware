@@ -18,9 +18,7 @@ router.get('/', async (req, res) => {
         } = req.params;
     */
     const result = await bbsDAO.findAllBbs();
-    return res.json({
-        data: result
-    })
+    return res.send(result)
 })
 
 //게시판 조회

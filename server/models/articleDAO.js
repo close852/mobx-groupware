@@ -1,4 +1,7 @@
 import db from '../lib/db'
+import {
+    uuid
+} from '../utils/uuidUtils'
 
 const findArticleById = async (articleId) => {
     let sql = `SELECT * FROM ARTICLE WHERE ARTICLE_ID = ?`;
@@ -23,19 +26,19 @@ const deleteArticleById = async (articleId) => {
 //     return db.query(sql, args).catch(err => err);
 // }
 const findArticleByBbsId = (bbs_id) => {
-    let sql = ` SELECT * FROM ARTICLE WHERE BBS_ID = ?`;
+    let sql = ` SELECT * FROM ARTICLE WHERE BBS_ID = ? ORDER BY REGDATE DESC`;
     let args = [bbs_id];
     return db.query(sql, args).catch(err => err);
 }
 
 
-const insertArticle = (title, content, bbs_id, user_id, ref_article_id) => {
-    const refId = ref_article_id ? ref_article_id : 'lastval(mw_seq)';
+const insertArticle = ({ title, content, bbs_id, writer, ref_article_id }) => {
+    //seq 만들어서 넣기
+    const article_id = uuid();
+    const refId = ref_article_id ? article_id : ref_article_id;
 
-    let sql = `INSERT INTO ARTICLE (ARTICLE_ID, TITLE, CONTENT, BBS_ID, USER_ID, REF_ARTICLE_ID)  VALUES (nextval(mw_seq), ? , ? , ? , ? , ${refId} )`;
-    let args = [title, content, bbs_id, user_id];
-    if (ref_article_id)
-        args.push(ref_article_id)
+    let sql = `INSERT INTO ARTICLE (ARTICLE_ID, TITLE, CONTENT, BBS_ID, USER_ID, REF_ARTICLE_ID)  VALUES (?, ? , ? , ? , ? , ? )`;
+    let args = [article_id, title, content, bbs_id, writer, refId];
 
     return db.query(sql, args).catch(err => err);
 }

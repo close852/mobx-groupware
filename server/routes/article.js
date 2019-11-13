@@ -1,8 +1,19 @@
 import express from 'express'
+import fs from 'fs'
 import articleDAO from '../models/articleDAO'
 import {
     requireRole
 } from '../utils/roleUtils'
+
+import formidable from 'formidable';
+import pathUtil from 'path';
+
+var uploadDir = __dirname + '/upload';
+var imageDir = __dirname + '/image';
+var publicDir = 'public/temp'
+// 업로드 된 데이터 목록
+var paintList = [];
+const encode = "utf-8";
 
 const router = express.Router();
 
@@ -14,9 +25,7 @@ router.get('/:id', async (req, res) => {
         id
     } = req.params;
     const result = await articleDAO.findArticleById(id);
-    return res.json({
-        data: result
-    })
+    return res.send(result)
 })
 
 
@@ -60,55 +69,96 @@ router.delete('/:id', async (req, res) => {
  * 게시글 등록
  */
 router.post('/', async (req, res) => {
-    const {
-        title,
-        content,
-        bbsId,
-        userId
-    } = req.body;
 
-    const { // /:id
-    } = req.params;
-    console.log('req.body > ', req.body)
-    const idx = 1;
-    const result = await articleDAO.insertArticle(title, content, bbsId, userId);
-    return res.json({
-        data: result
+    var form = formidable.IncomingForm();
+    form.multiples = true;
+    form.encoding = encode;
+    form.parse(req, async (err, fields, files) => {
+        // const { bbs_id, writer, dept_id, title, content } = fields;
+
+        console.log('req.body > ', req.body, req.params)
+        const idx = 1;
+        const result = await articleDAO.insertArticle(fields);
+        if (files.upload) {
+            console.log('여기안옴', files.upload.length)
+            let uploadList = files.upload;
+            uploadList.forEach(async (file, idx, arr) => {
+                var title = file.name;
+                let real_path = file.path;
+                let size = file.size;
+                var date = new Date();
+                var newImageName = date.getTime();
+                var ext = pathUtil.parse(title).ext;
+                console.log(title, real_path, size, ext);
+                var newPath = publicDir + '/' + newImageName + ext;
+                console.log(real_path, 'newPath ', newPath)
+                console.log('--------fs.renameSync-------')
+                await fs.rename(real_path, newPath, (err, data) => {
+                    if (err) {
+                        console.log('err.code !!!!', err.code)
+                        if (err.code === 'EXDEV') {
+                            copy_and_delete(real_path, newPath);
+                        }
+                    }
+                });
+                const url = 'http://127.0.0.1:3000/temp/' + newImageName + ext;
+                console.log(`post : url`, url, '여기온거맞지??');
+            })
+        }
+        const data = {
+            nexturl: fields.nexturl,
+            result: result
+        }
+        res.send(data)
     })
+
 })
 /**
  * 게시글 수정
  */
 router.put('/:id', async (req, res) => {
-    const {
-        title,
-        content,
-        user_id,
-        indent,
-        ref_article_id,
-        sortno,
-        bbs_id,
-        article_id
-    } = req.body;
+    var form = formidable.IncomingForm();
+    form.multiples = true;
+    form.encoding = encode;
+    form.parse(req, async (err, fields, files) => {
 
-    const { // /:id
-        id
-    } = req.params;
-
-    const params = {
-        title,
-        content,
-        bbs_id,
-        user_id,
-        indent,
-        ref_article_id,
-        sortno
-    };
-
-    const result = await articleDAO.updateDynamicArticle(params, id);
-    return res.json({
-        data: result
+        console.log('fields', fields)
+        console.log('req.body > ', req.body, req.params)
+        if (files.upload) {
+            console.log('여기안옴', files.upload.length)
+            let uploadList = files.upload;
+            uploadList.forEach(async (file, idx, arr) => {
+                var title = file.name;
+                let real_path = file.path;
+                let size = file.size;
+                var date = new Date();
+                var newImageName = date.getTime();
+                var ext = pathUtil.parse(title).ext;
+                console.log(title, real_path, size, ext);
+                var newPath = publicDir + '/' + newImageName + ext;
+                console.log(real_path, 'newPath ', newPath)
+                console.log('--------fs.renameSync-------')
+                await fs.rename(real_path, newPath, (err, data) => {
+                    if (err) {
+                        console.log('err.code !!!!', err.code)
+                        if (err.code === 'EXDEV') {
+                            copy_and_delete(real_path, newPath);
+                        }
+                    }
+                });
+                const url = 'http://127.0.0.1:3000/temp/' + newImageName + ext;
+                console.log(`post : url`, url, '여기온거맞지??');
+            })
+        }
+        const result = await articleDAO.updateArticle(fields);
+        const data = {
+            nexturl: fields.nexturl,
+            result: result
+        }
+        res.send(data)
     })
+    // const result = await articleDAO.updateDynamicArticle(params, id);
+    return res.send('test')
 })
 
 const paging = ({ orderBy, sortType, page, pageSize, startWith }) => {
@@ -122,5 +172,21 @@ const paging = ({ orderBy, sortType, page, pageSize, startWith }) => {
         startWith: (Number(page) - 1) * pageSize,
     }
 }
+
+function copy_and_delete(oldPath, newPath) {
+    var readStream = fs.createReadStream(oldPath);
+    var writeStream = fs.createWriteStream(newPath);
+
+    // readStream.on('error', callback);
+    // writeStream.on('error', callback);
+    // readStream.on('close', 
+    //       function () {
+    //         fs.unlink(oldPath, callback);
+    //       }
+    // );
+
+    readStream.pipe(writeStream);
+}
+
 
 export default router;

@@ -9,13 +9,13 @@ class BbsList extends Component {
         let store = this.props.ArticleStore;
         const query = queryString.parse(this.props.location.search);
         // console.log(query)
-        store.getArticle(query.bbs_id);
+        store.getArticleList(query.bbs_id);
         // console.log('data >> ', data);
         // console.log(store.articles)
     }
     menuName = "문서함22"
 
-    linkUrl = "/bbs/view?bbsid=";
+    linkUrl = "/article?article_id=";
 
 
     render() {

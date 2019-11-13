@@ -4,15 +4,19 @@ import axios from 'axios';
 
 class ArticleStore {
     articles = [];
-    headCells = [
-        { id: 'no', numeric: false, disablePadding: true, label: '#', minWidth: '10px', align: 'center' },
-        { id: 'bbsname', numeric: false, disablePadding: false, label: '게시판명', minWidth: '100px', align: 'center' },
-        { id: 'title', numeric: false, disablePadding: false, label: '제목', minWidth: '500px', align: 'left' },
-        { id: 'writer', numeric: false, disablePadding: false, label: '게시자', minWidth: '120px', align: 'center' },
-        { id: 'writedate', numeric: false, disablePadding: false, label: '게시일', minWidth: '120px', align: 'center' },
-    ];
+    article = {};
 
-    getArticle = (bbs_id) => {
+    headCells = [
+        { id: 'bbs_id', numeric: false, disablePadding: false, label: '게시판명', minWidth: '100px', align: 'center' },
+        { id: 'title', numeric: false, disablePadding: false, label: '제목', minWidth: '500px', align: 'left' },
+        { id: 'user_id', numeric: false, disablePadding: false, label: '게시자', minWidth: '120px', align: 'center' },
+        { id: 'regdate', format: 'date', numeric: false, disablePadding: false, label: '게시일', minWidth: '120px', align: 'center' },
+    ];
+    createData = (id, bbs_id, title, user_id, regdate) => {
+        return { id, bbs_id, title, user_id, regdate };
+    }
+
+    getArticleList = (bbs_id) => {
         // console.log('getArticles > ' + bbs_id)
         axios.get(`/api/article?bbs_id=${bbs_id}`)
             .then(res => {
@@ -20,21 +24,34 @@ class ArticleStore {
                 // this.setArticle(res);
                 // this.articles = res.data;
                 this.articles = res.data.map(article => (
-                    this.createData(article.article_id, '', article.title, article.user_id, article.writedate)
+                    this.createData(article.article_id, article.bbs_id, article.title, article.user_id, article.regdate)
                 ))
             })
     }
-    createData = (id, bbsname, title, writer, writedate) => {
-        let no = id;
-        return { id, no, bbsname, title, writer, writedate };
+    getArticle = async (article_id) => {
+        // console.log('getArticles > ' + bbs_id)
+        let data = await axios.get(`/api/article/${article_id}`)
+            .then(res => {
+                this.article = res.data[0];
+                console.log('res.data[0]', res.data, res.data[0])
+                // this.articles = res.data.map(article => (
+                //     this.createData(article.article_id, article.bbs_id, article.title, article.user_id, article.regdate)
+                // ))
+                return res.data[0];
+            })
+
+        return data;
     }
 
 }
 
 decorate(ArticleStore, {
     articles: observable,
+    article: observable,
     headCells: observable,
+    getArticleList: action,
     getArticle: action,
+
 })
 
 export default ArticleStore;

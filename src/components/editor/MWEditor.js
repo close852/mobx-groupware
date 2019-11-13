@@ -28,28 +28,30 @@ import MyUploadAdapter from './MyUploadAdapter'
 
 import './MWEditor.css'
 function MWEditor({ mode, content, setContent }) {
+    console.log('mode', mode)
     const _onChange = (event, editor) => {
         setContent(editor.getData())
     }
 
     const _onBlur = (event, editor) => {
-        console.log('Blur.', );
+        console.log('Blur.');
     }
 
     const _onFocus = (event, editor) => {
-        console.log('_onFocus.', );
+        console.log('_onFocus.');
     }
     const _init = (editor) => {
         // You can store the "editor" and use when it is needed.
-        console.log('Editor is ready to use!', );
+        console.log('Editor is ready to use!');
         editor.plugins.get('FileRepository').createUploadAdapter = (loader) => {
             return new MyUploadAdapter(loader);
         };
     }
-    const defaultToolbar = mode === "edit" ? ['heading', '|', 'bold', 'italic', '|', 'bulletedList', 'numberedList', '|', 'imageUpload', 'insertTable','|','alignment:left', 'alignment:right', 'alignment:center', 'alignment:justify', 'link', 'blockQuote', '|', 'undo', 'redo','highlight'] : [];
+    console.log('mode > ', mode, mode ? 1 : 2)
+    // const defaultToolbar = mode ? ['heading', '|', 'bold', 'italic', '|', 'bulletedList', 'numberedList', '|', 'imageUpload', 'insertTable', '|', 'alignment:left', 'alignment:right', 'alignment:center', 'alignment:justify', 'link', 'blockQuote', '|', 'undo', 'redo', 'highlight'] : [];
     const editorConfig = {
-        plugins:[Essentials,Highlight,Table,Link,Paragraph,Alignment,Heading,Image,Bold,ImageResize,Italic,ImageUpload,ImageToolbar,ImageStyle,ImageCaption,BlockQuote,List],
-        toolbar: defaultToolbar,
+        plugins: [Essentials, Highlight, Table, Link, Paragraph, Alignment, Heading, Image, Bold, ImageResize, Italic, ImageUpload, ImageToolbar, ImageStyle, ImageCaption, BlockQuote, List],
+        toolbar: ['heading', '|', 'bold', 'italic', '|', 'bulletedList', 'numberedList', '|', 'imageUpload', 'insertTable', '|', 'alignment:left', 'alignment:right', 'alignment:center', 'alignment:justify', 'link', 'blockQuote', '|', 'undo', 'redo', 'highlight'],
         heading: {
             options: [
                 { model: 'paragraph', title: 'Paragraph', class: 'ck-heading_paragraph' },
@@ -58,7 +60,7 @@ function MWEditor({ mode, content, setContent }) {
             ]
         },
         image: {
-            toolbar: [ 'imageTextAlternative', '|', 'imageStyle:alignLeft', 'imageStyle:full', 'imageStyle:alignRight' ],
+            toolbar: ['imageTextAlternative', '|', 'imageStyle:alignLeft', 'imageStyle:full', 'imageStyle:alignRight'],
             resizeUnit: '%',
             styles: [
                 // This option is equal to a situation where no style is applied.
@@ -71,54 +73,54 @@ function MWEditor({ mode, content, setContent }) {
 
         },
         alignment: {
-            options: [ 'left', 'right','center','justify' ]
+            options: ['left', 'right', 'center', 'justify']
         },
         highlight: {
             options: [
-              {
-                  model: 'redPen',
-                  class: 'pen-red',
-                  title: 'Red pen',
-                  color: 'var(--ck-highlight-pen-red)',
-                  type: 'pen'
-              },
-              {
-                  model: 'greenPen',
-                  class: 'pen-green',
-                  title: 'Green pen',
-                  color: 'var(--ck-highlight-pen-green)',
-                  type: 'pen'
-              },
-              {
-                  model: 'yellowMarker',
-                  class: 'marker-yellow',
-                  title: 'Yellow marker',
-                  color: 'var(--ck-highlight-marker-yellow)',
-                  type: 'marker'
-              },
-              {
-                  model: 'greenMarker',
-                  class: 'marker-green',
-                  title: 'Green marker',
-                  color: 'var(--ck-highlight-marker-green)',
-                  type: 'marker'
-              },
-              {
-                  model: 'pinkMarker',
-                  class: 'marker-pink',
-                  title: 'Pink marker',
-                  color: 'var(--ck-highlight-marker-pink)',
-                  type: 'marker'
-              },
-              {
-                  model: 'blueMarker',
-                  class: 'marker-blue',
-                  title: 'Blue marker',
-                  color: 'var(--ck-highlight-marker-blue)',
-                  type: 'marker'
-              },
+                {
+                    model: 'redPen',
+                    class: 'pen-red',
+                    title: 'Red pen',
+                    color: 'var(--ck-highlight-pen-red)',
+                    type: 'pen'
+                },
+                {
+                    model: 'greenPen',
+                    class: 'pen-green',
+                    title: 'Green pen',
+                    color: 'var(--ck-highlight-pen-green)',
+                    type: 'pen'
+                },
+                {
+                    model: 'yellowMarker',
+                    class: 'marker-yellow',
+                    title: 'Yellow marker',
+                    color: 'var(--ck-highlight-marker-yellow)',
+                    type: 'marker'
+                },
+                {
+                    model: 'greenMarker',
+                    class: 'marker-green',
+                    title: 'Green marker',
+                    color: 'var(--ck-highlight-marker-green)',
+                    type: 'marker'
+                },
+                {
+                    model: 'pinkMarker',
+                    class: 'marker-pink',
+                    title: 'Pink marker',
+                    color: 'var(--ck-highlight-marker-pink)',
+                    type: 'marker'
+                },
+                {
+                    model: 'blueMarker',
+                    class: 'marker-blue',
+                    title: 'Blue marker',
+                    color: 'var(--ck-highlight-marker-blue)',
+                    type: 'marker'
+                },
             ]
-          },
+        },
 
     }
     return (
@@ -130,7 +132,7 @@ function MWEditor({ mode, content, setContent }) {
             onChange={_onChange}
             onBlur={_onBlur}
             onFocus={_onFocus}
-            disabled={mode !== "edit"} //readOnly
+            disabled={!mode} //readOnly
         />
     )
 }

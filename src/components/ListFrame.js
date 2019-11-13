@@ -19,6 +19,12 @@ import Tooltip from '@material-ui/core/Tooltip';
 // import Switch from '@material-ui/core/Switch';
 import DeleteIcon from '@material-ui/icons/Delete';
 import { NavLink } from 'react-router-dom'
+import TimeAgo from 'javascript-time-ago'
+import ko from 'javascript-time-ago/locale/ko'
+
+TimeAgo.addLocale(ko)
+const timeAgo = new TimeAgo('ko-KR')
+
 
 function ListFrame({ menuName, rows, headCells, linkUrl }) {
 
@@ -72,13 +78,14 @@ function ListFrame({ menuName, rows, headCells, linkUrl }) {
                             // align={'center'}
                             // padding={headCell.disablePadding ? 'none' : 'default'}
                             sortDirection={orderBy === headCell.id ? order : false}
-                            style={{ minWidth: headCell.minWidth }}
+                            style={{ minWidth: headCell.minWidth, textAlign: 'center' }}
 
                         >
                             <TableSortLabel
                                 active={orderBy === headCell.id}
                                 direction={order}
                                 onClick={createSortHandler(headCell.id)}
+                                style={{ textAlign: 'center', marginLeft: '24px' }}
                             >
                                 {headCell.label}
                                 {orderBy === headCell.id ? (
@@ -332,7 +339,7 @@ function ListFrame({ menuName, rows, headCells, linkUrl }) {
                                                                 <NavLink to={`${linkUrl}${row.id}`} className={classes.link}>
                                                                     {column.format && typeof value === 'number' ? column.format(value) : value}
                                                                 </NavLink>
-                                                            ) || (column.format && typeof value === 'number' ? column.format(value) : value)
+                                                            ) || (column.format && column.format === 'date' ? timeAgo.format(new Date(value)) : value)
                                                         }
                                                     </TableCell>
                                                 );
