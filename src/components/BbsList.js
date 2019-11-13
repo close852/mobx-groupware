@@ -15,7 +15,7 @@ class BbsList extends Component {
     }
     menuName = "문서함22"
 
-    linkUrl = "/article?article_id=";
+    linkUrl = "/article/";
 
 
     render() {

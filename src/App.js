@@ -52,8 +52,9 @@ function App() {
           <Route path="/app/todolist" component={AppList}></Route>
           <Route path="/app/processlist" component={AppList}></Route>
           <Route path="/app/endlist" component={BbsList}></Route>
-          <Route path="/bbs/list" component={({ location }) => (<BbsList location={location} />)}></Route>
-          <Route exact path="/article" component={({ history, location }) => (<ArticleView history={history} location={location} />)}></Route>
+          <Route path="/bbs/list" component={BbsList}></Route>
+          <Route exact path="/article" component={ArticleView}></Route>
+          <Route path="/article/:id" component={ArticleView}></Route>
 
           <Route exact path="/bbs/view" component={BbsView}></Route>
         </Switch>

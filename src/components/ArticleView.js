@@ -8,12 +8,11 @@ import InputLabel from '@material-ui/core/InputLabel';
 import TextField from '@material-ui/core/TextField';
 import { makeStyles } from '@material-ui/core/styles';
 import axios from 'axios'
-import queryString from "query-string";
 //https://rinae.dev/posts/a-complete-guide-to-useeffect-ko
-function ArticleView({ history, location }) {
+function ArticleView({ history, location, match }) {
 
-    const query = queryString.parse(location.search);
 
+    console.log('match.params.id', match.params.id)
     const [bbsList, setBbsList] = useState([]);
     const bbsListMap = bbsList.map((bbs) => (
         console.log('bbs', bbs.bbs_id, bbs.name)
@@ -29,8 +28,8 @@ function ArticleView({ history, location }) {
     const [editMode, setEditMode] = useState(false);
 
     const getArticleFetchUrl = useCallback(() => {
-        return axios.get(`/api/article/${query.article_id}`);
-    }, [query.article_id]);  // ✅ 콜백 deps는 OK
+        return axios.get(`/api/article/${match.params.id}`);
+    }, [match.params.id]);  // ✅ 콜백 deps는 OK
 
     const getBbsFetchUrl = useCallback(() => {
         return axios.get(`/api/bbs`);
@@ -43,7 +42,7 @@ function ArticleView({ history, location }) {
             setBbsList(res.data);
         })
 
-        if (location.search) {
+        if (match.params.id) {
             const articleData = getArticleFetchUrl();
             articleData.then(res => {
                 const article = res.data[0];
@@ -54,14 +53,15 @@ function ArticleView({ history, location }) {
                     setBbsId(article.bbs_id);
                     setUserId(article.user_id);
                     setArticleId(article.article_id);
-
+                } else {
+                    setEditMode(true);
                 }
             })
         } else {
             setEditMode(true);
         }
         // ... 데이터를 불러와서 무언가를 한다 ...
-    }, [getArticleFetchUrl, getBbsFetchUrl, location.search]); // ✅ 이펙트의 deps는 OK
+    }, [getArticleFetchUrl, getBbsFetchUrl, location.search, match.params.id]); // ✅ 이펙트의 deps는 OK
 
     // FORM DATA
     const writer = "1";
