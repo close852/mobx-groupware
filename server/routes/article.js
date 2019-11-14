@@ -59,6 +59,7 @@ router.delete('/:id', async (req, res) => {
     const {
         id
     } = req.params;
+    console.log('req.params > ', req.params, id)
     const result = await articleDAO.deleteArticleById(id);
     return res.json({
         data: result

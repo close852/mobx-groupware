@@ -27,7 +27,7 @@ const PORT = process.env.PORT || 4000;
 // app.use(logger('combined', {
 //     stream: accessLogStream
 // }))
-app.use('/', express.static(path.join(__dirname, './../public')))
+app.use(express.static('public'))
 app.use(session({
     secret: 'mw',
     resave: false,

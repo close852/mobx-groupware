@@ -14,14 +14,14 @@ function ArticleView({ history, location, match }) {
 
     console.log('match.params.id', match.params.id)
     const [bbsList, setBbsList] = useState([]);
-    const bbsListMap = bbsList.map((bbs) => (
-        console.log('bbs', bbs.bbs_id, bbs.name)
-    ));
     const [articleId, setArticleId] = useState('');
     const [title, setTitle] = useState('');
     const [content, setContent] = useState('');
     const [bbsId, setBbsId] = useState('');
     const [userId, setUserId] = useState('');
+    const [userName, setUserName] = useState('');
+    const [deptId, setDeptId] = useState('');
+    const [deptName, setDeptName] = useState('');
 
     const [fileQueue, setFileQueue] = useState([]);
 
@@ -48,21 +48,38 @@ function ArticleView({ history, location, match }) {
                 const article = res.data[0];
                 if (article) {
                     console.log(article)
-                    setContent(article.content);
-                    setTitle(article.title);
-                    setBbsId(article.bbs_id);
-                    setUserId(article.user_id);
                     setArticleId(article.article_id);
+
+                    setTitle(article.title);
+                    setContent(article.content);
+
+                    setUserId(article.user_id);
+                    setUserName(article.username);
+                    setDeptId(article.dept_id);
+                    setDeptName(article.deptname);
                 } else {
-                    setEditMode(true);
+                    // setBbsId(article.bbs_id);
+                    initForms();
                 }
             })
         } else {
-            setEditMode(true);
+            initForms();
         }
         // ... 데이터를 불러와서 무언가를 한다 ...
     }, [getArticleFetchUrl, getBbsFetchUrl, location.search, match.params.id]); // ✅ 이펙트의 deps는 OK
 
+    const initForms = () => {
+        setArticleId('');
+
+        setTitle('');
+        setContent('');
+
+        setUserId('2');
+        setUserName('mwuser123');
+        setDeptId('DEPT01');
+        setDeptName('개발');
+        setEditMode(true);
+    }
     // FORM DATA
     const writer = "1";
     const dept_id = "1";
@@ -175,13 +192,13 @@ function ArticleView({ history, location, match }) {
     const handleDelete = (e) => {
         console.log('handleDelete > ')
         e.preventDefault();
-        const form = document.bbsForm;
-        const data = new FormData(form);
-        axios.delete('/api/article', data)
+
+        const data = new FormData();
+        axios.delete(`/api/article/${articleId}`)
             .then(res => {
                 console.log(res)
                 if (res.data) {
-                    history.push(res.data.nexturl);
+                    // history.push(res.data.nexturl);
                 }
             });
 
@@ -193,17 +210,19 @@ function ArticleView({ history, location, match }) {
                     <input type="hidden" id="nexturl" name="nexturl" value={`/bbs/list?bbs_id=${bbsId}`} />
                     <input type="hidden" id="article_id" name="article_id" value={articleId} />
                     <input type="hidden" id="user_id" name="user_id" value={userId} />
+                    <input type="hidden" id="dept_id" name="user_id" value={deptId} />
 
 
                     <div>
                         <FormControl variant="outlined" className={classes.formControl}>
                             <InputLabel htmlFor="bbs-select" style={{ backgroundColor: 'white' }}>
-                                게시판 {bbsListMap}
+                                게시판
                             </InputLabel>
                             <Select
                                 native
                                 value={bbsId}
                                 onChange={changeBbsId}
+                                disabled={!editMode}
                                 // labelWidth={labelWidth}
                                 inputProps={{
                                     name: 'bbs_id',
@@ -213,7 +232,7 @@ function ArticleView({ history, location, match }) {
                                 <option value="" />
                                 {
                                     bbsList.map(bbs => (
-                                        <option value={bbs.bbs_id}>{bbs.name}</option>
+                                        <option value={bbs.bbs_id}>{bbs.bbsname}</option>
                                     ))
                                 }
                             </Select>
@@ -222,7 +241,7 @@ function ArticleView({ history, location, match }) {
                             id="writerDisp"
                             name="writerDisp"
                             label="게시자"
-                            defaultValue="최지우"
+                            value={userName}
                             className={classes.textFieldInput}
                             margin="normal"
                             variant="outlined"
@@ -234,7 +253,7 @@ function ArticleView({ history, location, match }) {
                             id="deptDisp"
                             name="deptDisp"
                             label="부서명"
-                            defaultValue="고객지원팀"
+                            value={deptName}
                             className={classes.textFieldInput}
                             margin="normal"
                             variant="outlined"
@@ -253,7 +272,11 @@ function ArticleView({ history, location, match }) {
                                 onChange={(e) => { setTitle(e.target.value); }}
                                 className={classes.textField}
                                 margin="normal"
-                                variant="outlined" />
+                                variant="outlined"
+                                InputProps={{
+                                    readOnly: !editMode,
+                                }}
+                            />
                         </div>
                     </div>
                     <div id="_editor" className={classes.editor}>
@@ -264,7 +287,10 @@ function ArticleView({ history, location, match }) {
                         <MWFileReader fileQueue={fileQueue} setFileQueue={setFileQueue} />
                     </div>
                     <div className={classes.buttonInc}>
-                        {editMode &&
+                        {(editMode && articleId) &&
+                            <Button variant="contained" type="submit" color="secondary" className={classes.button} onClick={handleModify}>수정</Button>
+                        }
+                        {(editMode && !articleId) &&
                             <Fragment>
                                 <Button variant="contained" type="submit" color="default" className={classes.button} onClick={handlePreview}>미리보기</Button>
                                 <Button variant="contained" type="submit" color="default" className={classes.button} onClick={handleTempSave}>임시저장</Button>
@@ -273,7 +299,7 @@ function ArticleView({ history, location, match }) {
                         }
                         {!editMode &&
                             <Fragment>
-                                <Button variant="contained" type="submit" color="secondary" className={classes.button} onClick={handleModify}>수정</Button>
+                                <Button variant="contained" type="submit" color="secondary" className={classes.button} onClick={() => { setEditMode(true) }}>수정</Button>
                                 <Button variant="contained" type="submit" color="default" className={classes.button} onClick={handleDelete}>삭제</Button>
                             </Fragment>
                         }

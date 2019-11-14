@@ -1,4 +1,6 @@
 import express from 'express';
+import upload from './upload'
+
 import article from './article'
 import bbs from './bbs'
 import app from './app'
@@ -7,6 +9,7 @@ import user from './user'
 import menu from './menu'
 
 const router = express.Router();
+router.use('/upload', upload);/*requireRole("USER"), */
 
 router.use('/app', app);/*requireRole("USER"), */
 router.use('/bbs', bbs);/*requireRole("USER"), */

@@ -7,13 +7,13 @@ class ArticleStore {
     article = {};
 
     headCells = [
-        { id: 'bbs_id', numeric: false, disablePadding: false, label: '게시판명', minWidth: '100px', align: 'center' },
+        { id: 'bbsname', numeric: false, disablePadding: false, label: '게시판명', minWidth: '100px', align: 'center' },
         { id: 'title', numeric: false, disablePadding: false, label: '제목', minWidth: '500px', align: 'left' },
-        { id: 'user_id', numeric: false, disablePadding: false, label: '게시자', minWidth: '120px', align: 'center' },
+        { id: 'username', numeric: false, disablePadding: false, label: '게시자', minWidth: '120px', align: 'center' },
         { id: 'regdate', format: 'date', numeric: false, disablePadding: false, label: '게시일', minWidth: '120px', align: 'center' },
     ];
-    createData = (id, bbs_id, title, user_id, regdate) => {
-        return { id, bbs_id, title, user_id, regdate };
+    createData = (id, bbsname, title, username, regdate) => {
+        return { id, bbsname, title, username, regdate };
     }
 
     getArticleList = (bbs_id) => {
@@ -24,7 +24,7 @@ class ArticleStore {
                 // this.setArticle(res);
                 // this.articles = res.data;
                 this.articles = res.data.map(article => (
-                    this.createData(article.article_id, article.bbs_id, article.title, article.user_id, article.regdate)
+                    this.createData(article.article_id, article.bbsname, article.title, article.username, article.regdate)
                 ))
             })
     }

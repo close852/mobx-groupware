@@ -23,15 +23,15 @@ function BbsList({ location, match, ArticleStore }) {
     }, [match.params.id]);  // ✅ 콜백 deps는 OK
 
 
-    const createData = (id, bbs_id, title, user_id, regdate) => {
-        return { id, bbs_id, title, user_id, regdate };
+    const createData = (id, bbsname, title, username, regdate) => {
+        return { id, bbsname, title, username, regdate };
     }
     useEffect(() => {
         const data = getArticleFetchUrl();
         data.then(res => {
             console.log('bbsData > res.data', res.data)
             let articleList = res.data.map(article => (
-                createData(article.article_id, article.bbs_id, article.title, article.user_id, article.regdate)
+                createData(article.article_id, article.bbsname, article.title, article.username, article.regdate)
             ))
             setArticleData(articleList)
         })

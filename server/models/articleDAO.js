@@ -4,7 +4,12 @@ import {
 } from '../utils/uuidUtils'
 
 const findArticleById = async (articleId) => {
-    let sql = `SELECT * FROM ARTICLE WHERE ARTICLE_ID = ?`;
+    let sql = ` SELECT  b.bbsname,article_id,content,title, indent,a.sortno, up_article_id, a.bbs_id,a.regdate,u.user_id,u.username,u.dept_id,u.deptname`;
+    sql += ` FROM BBS b, ARTICLE a , v_userinfo u `
+    sql += ` WHERE a.ARTICLE_ID = ? `
+    sql += ` AND a.user_id = u.user_id `
+    sql += ` AND a.bbs_id = b.bbs_id `
+    sql += ` ORDER BY REGDATE DESC `
     let args = [articleId]; //[idx];
 
     return db.query(sql, args).catch(err => err);
@@ -26,7 +31,12 @@ const deleteArticleById = async (articleId) => {
 //     return db.query(sql, args).catch(err => err);
 // }
 const findArticleByBbsId = (bbs_id) => {
-    let sql = ` SELECT * FROM ARTICLE WHERE BBS_ID = ? ORDER BY REGDATE DESC`;
+    let sql = ` SELECT b.bbsname,article_id,content,title, indent,a.sortno, up_article_id, a.bbs_id,a.regdate,u.user_id,u.username,u.dept_id,u.deptname`;
+    sql += ` FROM BBS b, ARTICLE a , v_userinfo u `
+    sql += ` WHERE a.BBS_ID = ? `
+    sql += ` AND a.user_id = u.user_id `
+    sql += ` AND a.bbs_id = b.bbs_id `
+    sql += ` ORDER BY REGDATE DESC `
     let args = [bbs_id];
     return db.query(sql, args).catch(err => err);
 }
