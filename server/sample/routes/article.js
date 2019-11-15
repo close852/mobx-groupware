@@ -2,23 +2,23 @@ import express from 'express'
 import fs from 'fs'
 import formidable from 'formidable';
 import pathUtil from 'path';
-
-var uploadDir = __dirname + '/upload';
-var imageDir = __dirname + '/image';
+import { fileUpload } from '../../utils/fileUtils'
+// var uploadDir = __dirname + '/upload';
+// var imageDir = __dirname + '/image';
 var publicDir = 'public/temp'
 // 업로드 된 데이터 목록
-var paintList = [];
+// var paintList = [];
 
 const router = express.Router();
 
 
-router.get('/',(req,res)=>{
+router.get('/', (req, res) => {
     console.log('???');
     res.json({
-        data:'data???'
+        data: 'data???'
     })
 })
-const encode = "utf-8";
+// const encode = "utf-8";
 //결재문서 조회시 버튼에 대한 권한, 수정가능 여부
 router.post('/', (req, res) => {
     console.log('router.post 여기가 article인데...')
@@ -26,13 +26,15 @@ router.post('/', (req, res) => {
     form.multiples = true;
     //content 등, 기본 메모리 2MB
     // form.maxFieldsSize = 2 * 1024 * 1024;
-
+    // form.en
     form.parse(req, async (err, fields, files) => {
-        console.log('fields > ',fields)
-        if(files.upload){
-            console.log('여기안옴',files.upload.length)
+        console.log('fields > ', fields)
+        if (files.upload) {
+            console.log('여기안옴', files.upload.length)
             let uploadList = files.upload;
-            uploadList.forEach(async (file,idx,arr)=>{
+            uploadList.forEach(async (file, idx, arr) => {
+                const refid = "";
+                fileUpload(file, 'ARTICLE', 'FILE', refid, idx);
                 var title = file.name;
                 let real_path = file.path;
                 let size = file.size;
@@ -56,7 +58,7 @@ router.post('/', (req, res) => {
             })
         }
         res.json({
-            'test':'test'
+            'test': 'test'
         })
 
     })

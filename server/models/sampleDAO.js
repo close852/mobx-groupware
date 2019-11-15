@@ -25,5 +25,6 @@ const insertUser = async (loginId, username, password) => {
 
 
 export default ({
-    findSampleById
+    findSampleById,
+    insertUser
 })

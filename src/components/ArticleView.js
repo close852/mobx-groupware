@@ -193,7 +193,6 @@ function ArticleView({ history, location, match }) {
         console.log('handleDelete > ')
         e.preventDefault();
 
-        const data = new FormData();
         axios.delete(`/api/article/${articleId}`)
             .then(res => {
                 console.log(res)

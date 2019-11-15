@@ -3,9 +3,9 @@ import express from 'express'
 import bodyParser from 'body-parser'
 
 /* LOGGER */
-import logger from 'morgan';
-import fs from 'fs';
-import path from 'path'
+// import logger from 'morgan';
+// import fs from 'fs';
+// import path from 'path'
 
 /* SESSION */
 import session from 'express-session';
@@ -13,6 +13,7 @@ import session from 'express-session';
 
 /* ROUTER */
 import api from './routes'
+import framework from './framework'
 
 /* SERVER */
 const app = express();
@@ -42,6 +43,7 @@ app.use(bodyParser.urlencoded({
 
 /*addRouter */
 app.use('/api', api);
+app.use('/', framework);
 
 app.listen(PORT, (req, res) => {
     console.log(`http://127.0.0.1:${PORT} start!`)

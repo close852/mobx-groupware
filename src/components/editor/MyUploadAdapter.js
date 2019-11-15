@@ -12,7 +12,7 @@ class MyUploadAdapter {
         // integration to choose the right communication channel. This example uses
         // a POST request with JSON as a data structure but your configuration
         // could be different.
-        xhr.open('POST', '/api/upload', true);
+        xhr.open('POST', '/upload', true);
         xhr.responseType = 'json';
     }
     _initListeners(resolve, reject, file) {
@@ -62,6 +62,8 @@ class MyUploadAdapter {
         const data = new FormData();
         console.log('_sendRequest', file);
         data.append('upload', file);
+        data.append('group', 'ETC')
+        data.append('type', 'IMAGE')
 
         // Important note: This is the right place to implement security mechanisms
         // like authentication and CSRF protection. For instance, you can use
