@@ -27,9 +27,9 @@ export function fileUpload(file, group, type, refid, sortno) {
     // /yyyy/mm/dd
     var date = new Date();
     date.setHours(date.getHours() + 9);
-    console.log('curr_date > ', date);
+    // console.log('curr_date > ', date);
     newPath += "/" + date.getFullYear() + "/" + date.getMonth() + "/" + date.getDate();
-    console.log('newPath > ', newPath)
+    // console.log('newPath > ', newPath)
     recursiveMkdir(newPath);
 
     var filename = file.name;

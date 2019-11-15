@@ -17,6 +17,7 @@ import ImageUpload from '@ckeditor/ckeditor5-image/src/imageupload';
 import ImageResize from '@ckeditor/ckeditor5-image/src/imageresize';
 import BlockQuote from '@ckeditor/ckeditor5-block-quote/src/blockquote';
 import Table from '@ckeditor/ckeditor5-table/src/table';
+import TableToolbar from '@ckeditor/ckeditor5-table/src/tabletoolbar';
 
 import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold';
 import Italic from '@ckeditor/ckeditor5-basic-styles/src/italic';
@@ -50,7 +51,7 @@ function MWEditor({ mode, content, setContent }) {
     console.log('mode > ', mode, mode ? 1 : 2)
     // const defaultToolbar = mode ? ['heading', '|', 'bold', 'italic', '|', 'bulletedList', 'numberedList', '|', 'imageUpload', 'insertTable', '|', 'alignment:left', 'alignment:right', 'alignment:center', 'alignment:justify', 'link', 'blockQuote', '|', 'undo', 'redo', 'highlight'] : [];
     const editorConfig = {
-        plugins: [Essentials, Highlight, Table, Link, Paragraph, Alignment, Heading, Image, Bold, ImageResize, Italic, ImageUpload, ImageToolbar, ImageStyle, ImageCaption, BlockQuote, List],
+        plugins: [Essentials, Highlight, Table,TableToolbar, Link, Paragraph, Alignment, Heading, Image, Bold, ImageResize, Italic, ImageUpload, ImageToolbar, ImageStyle, ImageCaption, BlockQuote, List],
         toolbar: ['heading', '|', 'bold', 'italic', '|', 'bulletedList', 'numberedList', '|', 'imageUpload', 'insertTable', '|', 'alignment:left', 'alignment:right', 'alignment:center', 'alignment:justify', 'link', 'blockQuote', '|', 'undo', 'redo', 'highlight'],
         heading: {
             options: [
@@ -59,6 +60,10 @@ function MWEditor({ mode, content, setContent }) {
                 { model: 'heading2', view: 'h2', title: 'Heading 2', class: 'ck-heading_heading2' }
             ]
         },
+        table: {
+            contentToolbar: [ 'tableColumn', 'tableRow', 'mergeTableCells' ]
+        },
+
         image: {
             toolbar: ['imageTextAlternative', '|', 'imageStyle:alignLeft', 'imageStyle:full', 'imageStyle:alignRight'],
             resizeUnit: '%',
