@@ -77,8 +77,7 @@ router.post('/', async (req, res) => {
     form.parse(req, async (err, fields, files) => {
         // const { bbs_id, writer, dept_id, title, content } = fields;
 
-        console.log('req.body > ', req.body, req.params)
-        const idx = 1;
+        console.log('req.body > ', fields)
         const result = await articleDAO.insertArticle(fields);
         if (files.upload) {
             console.log('여기안옴', files.upload.length)

@@ -49,6 +49,7 @@ function ArticleView({ history, location, match }) {
                 if (article) {
                     console.log(article)
                     setArticleId(article.article_id);
+                    setBbsId(article.bbs_id);
 
                     setTitle(article.title);
                     setContent(article.content);
@@ -70,6 +71,7 @@ function ArticleView({ history, location, match }) {
 
     const initForms = () => {
         setArticleId('');
+        setBbsId('');
 
         setTitle('');
         setContent('');
@@ -162,13 +164,13 @@ function ArticleView({ history, location, match }) {
             console.log(pair[0] + ', ' + pair[1]);
         }
 
-        // axios.post('/api/article', data)
-        //     .then(res => {
-        //         console.log(res)
-        //         if (res.data) {
-        //             history.push(res.data.nexturl);
-        //         }
-        //     });
+        axios.post('/api/article', data)
+            .then(res => {
+                console.log(res,res.data)
+                if (res.data) {
+                    history.push(res.data.nexturl);
+                }
+            });
     }
     const handleModify = (e) => {
         console.log('handleModify eeee > ', e)
@@ -206,10 +208,10 @@ function ArticleView({ history, location, match }) {
         <div className={classes.root}>
             <div className={classes.body}>
                 <form id="bbsForm" name="bbsForm" onSubmit={handleSubmit} >
-                    <input type="hidden" id="nexturl" name="nexturl" value={`/bbs/list?bbs_id=${bbsId}`} />
+                    <input type="hidden" id="nexturl" name="nexturl" value={`/bbs/list/${bbsId}`} />
                     <input type="hidden" id="article_id" name="article_id" value={articleId} />
                     <input type="hidden" id="user_id" name="user_id" value={userId} />
-                    <input type="hidden" id="dept_id" name="user_id" value={deptId} />
+                    <input type="hidden" id="dept_id" name="dept_id" value={deptId} />
 
 
                     <div>

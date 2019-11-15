@@ -55,7 +55,7 @@ function RightMenu({ history }) {
             menuName: "게시판",
             sortno: 1,
             link: '/bbs/list',//default 설정
-            default: '?bbs_id=1',
+            default: '/1',
             count: 2
         },
         {

@@ -11,7 +11,7 @@ const findByFileId = (fileid) => {
     }
 }
 const findAllByRefId = (refid) => {
-    let sql = `SELECT * from file where refid =?`;
+    let sql = `SELECT * from file where ref_id =?`;
     let args = [refid]; //[idx];
     try {
         return db.query(sql, args).catch(err => err);
@@ -32,7 +32,7 @@ const insertFile = ({ fileid, refid, filename, filepath, filesize, sortno, type 
     }
 }
 const deleteByFileId = (fileid) => {
-    let sql = `DELETE FROM FILE WHERE FILEID = ? `;
+    let sql = `DELETE FROM FILE WHERE FILE_ID = ? `;
     let args = [fileid];
 
     try {

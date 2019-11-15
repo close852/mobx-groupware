@@ -42,13 +42,13 @@ const findArticleByBbsId = (bbs_id) => {
 }
 
 
-const insertArticle = ({ title, content, bbs_id, writer, ref_article_id }) => {
+const insertArticle = ({ title, content, bbs_id, user_id, ref_article_id }) => {
     //seq 만들어서 넣기
     const article_id = uuid();
     const refId = ref_article_id ? article_id : ref_article_id;
 
     let sql = `INSERT INTO ARTICLE (ARTICLE_ID, TITLE, CONTENT, BBS_ID, USER_ID, REF_ARTICLE_ID)  VALUES (?, ? , ? , ? , ? , ? )`;
-    let args = [article_id, title, content, bbs_id, writer, refId];
+    let args = [article_id, title, content, bbs_id, user_id, refId];
 
     return db.query(sql, args).catch(err => err);
 }

@@ -1,6 +1,5 @@
 import express from 'express';
 import formidable from 'formidable';
-import pathUtil from 'path';
 import fileDAO from '../models/fileDAO'
 
 import fs from 'fs'
@@ -8,7 +7,6 @@ import mime from 'mime'
 
 import { fileUpload } from '../utils/fileUtils'
 import { uuid } from '../utils/uuidUtils'
-import { encode } from 'punycode';
 
 const router = express.Router();
 router.get('/download/:fileid', (req, res) => {
@@ -62,7 +60,6 @@ router.post('/upload', (req, res) => {
         if (files.upload) {
             const file = files.upload;
             fileid = fileUpload(file, group, type, refid, sortno);
-
         }
 
         const url = 'http://127.0.0.1:3000/download/' + fileid;
