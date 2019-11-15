@@ -4,6 +4,7 @@ import MWFileReader from 'components/file/MWFileReader'
 import Button from '@material-ui/core/Button';
 import Select from '@material-ui/core/Select';
 import FormControl from '@material-ui/core/FormControl';
+import FormHelperText  from '@material-ui/core/FormHelperText' 
 import InputLabel from '@material-ui/core/InputLabel';
 import TextField from '@material-ui/core/TextField';
 import { makeStyles } from '@material-ui/core/styles';
@@ -83,8 +84,6 @@ function ArticleView({ history, location, match }) {
         setEditMode(true);
     }
     // FORM DATA
-    const writer = "1";
-    const dept_id = "1";
 
     const drawerWidth = 240;
     const changeBbsId = (e) => {
@@ -151,6 +150,10 @@ function ArticleView({ history, location, match }) {
     const handleSubmit = (e) => {
         console.log('handleSubmit >> ')
         e.preventDefault();
+
+        if(validate()){
+            return false;
+        }
         // console.log('handleSubmit',e.target);
         // console.log(data,e.target.writer,e.target.title.value);
         const data = new FormData(e.target);
@@ -175,6 +178,12 @@ function ArticleView({ history, location, match }) {
     const handleModify = (e) => {
         console.log('handleModify eeee > ', e)
         e.preventDefault();
+
+        if(validate()){
+            return false;
+        }
+
+
         const form = document.bbsForm;
         const data = new FormData(form);
         console.log(data.entries());
@@ -204,6 +213,14 @@ function ArticleView({ history, location, match }) {
             });
 
     }
+
+    const validate =() => {
+        if(bbsId){
+            return true;
+        }
+
+        return true;
+    }
     return (
         <div className={classes.root}>
             <div className={classes.body}>
@@ -212,7 +229,7 @@ function ArticleView({ history, location, match }) {
                     <input type="hidden" id="article_id" name="article_id" value={articleId} />
                     <input type="hidden" id="user_id" name="user_id" value={userId} />
                     <input type="hidden" id="dept_id" name="dept_id" value={deptId} />
-
+                    <input type="hidden" id="content" name="content" value={content} />
 
                     <div>
                         <FormControl variant="outlined" className={classes.formControl}>
@@ -226,9 +243,10 @@ function ArticleView({ history, location, match }) {
                                 disabled={!editMode}
                                 // labelWidth={labelWidth}
                                 inputProps={{
-                                    name: 'bbs_id',
+                                    name: 'bbs-select',
                                     id: 'bbs-select',
                                 }}
+                                
                             >
                                 <option value="" />
                                 {
@@ -237,6 +255,7 @@ function ArticleView({ history, location, match }) {
                                     ))
                                 }
                             </Select>
+                            <FormHelperText id="my-helper-text" style={{display:'none'}}>test</FormHelperText>
                         </FormControl>
                         <TextField
                             id="writerDisp"
@@ -262,8 +281,6 @@ function ArticleView({ history, location, match }) {
                                 readOnly: true,
                             }}
                         />
-                        <input type="hidden" id="writer" name="writer" value={writer} />
-                        <input type="hidden" id="dept_id" name="dept_id" value={dept_id} />
                         <div>
                             <TextField
                                 id="title"
@@ -281,7 +298,6 @@ function ArticleView({ history, location, match }) {
                         </div>
                     </div>
                     <div id="_editor" className={classes.editor}>
-                        <input type="hidden" id="content" name="content" value={content} />
                         <MWEditor mode={editMode} content={content} setContent={setContent} />
                     </div>
                     <div id="fileAttach" className={classes.fileattach}>
