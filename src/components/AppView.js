@@ -1,24 +1,26 @@
-import React from 'react';
+import React,{useState,useEffect,useCallback} from 'react';
 import AppButton from './AppButton';
 import { makeStyles } from '@material-ui/core/styles';
+import MWEditor from 'components/editor/MWEditor'
+import { AppContent } from '.';
+function AppView({ history , location, match }) {
+    const [content,setContent] = useState('test123123 <editor/>222');
+    let editMode =true;
+    const initEditor = "test";
+    console.log('content >>',content)
+    const [formId, setFormId] = useState('')
+    const [appId, setAppId] = useState('')
+    
+    
+    // const repalceEditor = useCallback(() => {
+    //     return content.replace('<editor/>',<MWEditor mode={editMode} content={initEditor} setContent={setContent}/>);
+    // }, [content, editMode]);  // ✅ 콜백 deps는 OK
+    
+    useEffect(() => {
+        setFormId('WorkForm')
+        setAppId('')
+    }, []); // ✅ 이펙트의 deps는 OK
 
-function AppView({ location }) {
-    const content = '';
-    // async componentDidMount() {
-    //     console.log('query', this.query)
-    //     const result = await axios.get(`/api/app?formid=${this.query.formid}&appid=${this.query.appid}`)
-    //         .then(res => res.data)
-    //         .catch(e => e.response.data);
-    //     // this.content = result.data.content;
-    //     if (result.error) {
-    //         alert(result.error);
-    //     } else {
-    //         console.log(result, result.query, result.content);
-    //         this.setState({
-    //             content: result.content
-    //         })
-    //     }
-    // }
     const drawerWidth = 240;
     const useStyles = makeStyles(theme => ({
         container: {
@@ -66,15 +68,12 @@ function AppView({ location }) {
     }));
     const classes = useStyles();
 
-    // const { classes } = this;
-    console.log('content', content);
-
     return (
         <div className={classes.root}>
             <div className={classes.body}>
                 <AppButton />
                 <div className={classes.content}>
-                    <div id="appContent" dangerouslySetInnerHTML={{ __html: content }} />
+                    <AppContent formId={formId} appId={appId} history={history} location={location} match={match}/>
                 </div>
             </div>
         </div>

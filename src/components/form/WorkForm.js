@@ -1,21 +1,34 @@
-import React, { useState, useEffect, useCallback, Fragment } from 'react'
+import React, { useState, useCallback  } from 'react'
 import MWEditor from 'components/editor/MWEditor'
 import MWFileReader from 'components/file/MWFileReader'
-import Button from '@material-ui/core/Button';
-import Select from '@material-ui/core/Select';
-import FormControl from '@material-ui/core/FormControl';
-import FormHelperText  from '@material-ui/core/FormHelperText' 
-import InputLabel from '@material-ui/core/InputLabel';
 import TextField from '@material-ui/core/TextField';
 import { makeStyles } from '@material-ui/core/styles';
+import {AppLine, AppDate} from 'containers/app'
 import axios from 'axios'
+import Grid from '@material-ui/core/Grid';
+import moment from "moment";
+import MomentUtils from "@date-io/moment";
+import {
+    MuiPickersUtilsProvider,
+    DatePicker
+} from '@material-ui/pickers';
+import {FormControl, Select, InputLabel} from '@material-ui/core';
+
+moment.locale("ko"); // it is required to select default locale manually
+
 //https://rinae.dev/posts/a-complete-guide-to-useeffect-ko
-function ArticleView({ history, location, match }) {
+//https://material-ui-pickers.dev/demo/datepicker
+function WorkForm({ history, location, match, appId }) {
 
+    const [locale, setLocale] = useState("ko");
 
+    console.log('moment().format() > ',moment().format() )
     console.log('match.params.id', match.params.id)
-    const [bbsList, setBbsList] = useState([]);
+    const [selectedStrDate, setSelectedStrDate] = React.useState(new Date());
+    const [selectedEndDate, setSelectedEndDate] = React.useState(new Date());
+
     const [articleId, setArticleId] = useState('');
+    const [attCode, setAttCode] = useState('');
     const [title, setTitle] = useState('');
     const [content, setContent] = useState('');
     const [bbsId, setBbsId] = useState('');
@@ -36,60 +49,30 @@ function ArticleView({ history, location, match }) {
         return axios.get(`/api/bbs`);
     }, []);  // ✅ 콜백 deps는 OK
 
-    useEffect(() => {
-        const bbsData = getBbsFetchUrl();
-        bbsData.then(res => {
-            console.log('bbsData > res.data', res.data)
-            setBbsList(res.data);
-        })
-
-        if (match.params.id) {
-            const articleData = getArticleFetchUrl();
-            articleData.then(res => {
-                const article = res.data[0];
-                if (article) {
-                    console.log(article)
-                    setArticleId(article.article_id);
-                    setBbsId(article.bbs_id);
-
-                    setTitle(article.title);
-                    setContent(article.content);
-
-                    setUserId(article.user_id);
-                    setUserName(article.username);
-                    setDeptId(article.dept_id);
-                    setDeptName(article.deptname);
-                } else {
-                    // setBbsId(article.bbs_id);
-                    initForms();
-                }
-            })
-        } else {
-            initForms();
-        }
-        // ... 데이터를 불러와서 무언가를 한다 ...
-    }, [getArticleFetchUrl, getBbsFetchUrl, location.search, match.params.id]); // ✅ 이펙트의 deps는 OK
-
-    const initForms = () => {
-        setArticleId('');
-        setBbsId('');
-
-        setTitle('');
-        setContent('');
-
-        setUserId('2');
-        setUserName('mwuser123');
-        setDeptId('DEPT01');
-        setDeptName('개발');
-        setEditMode(true);
+    const handleAttCode =e=>{
+        setAttCode(e.target.value);
     }
-    // FORM DATA
-
     const drawerWidth = 240;
+    const handleDateStrChange = date => {
+        setSelectedStrDate(date);
+      };
+      const handleDateEndChange = date => {
+        setSelectedEndDate(date);
+      };
+
+      
     const changeBbsId = (e) => {
         setBbsId(e.target.value)
     }
     const useStyles = makeStyles(theme => ({
+        // label: {
+        //     backgroundColor:'white'
+        // },
+        formControl: {
+            margin: theme.spacing(1),
+            minWidth: 120,
+          },
+        
         container: {
             display: 'flex',
             flexWrap: 'wrap',
@@ -222,8 +205,7 @@ function ArticleView({ history, location, match }) {
         return true;
     }
     return (
-        <div className={classes.root}>
-            <div className={classes.body}>
+        <div >
                 <form id="bbsForm" name="bbsForm" onSubmit={handleSubmit} >
                     <input type="hidden" id="nexturl" name="nexturl" value={`/bbs/list/${bbsId}`} />
                     <input type="hidden" id="article_id" name="article_id" value={articleId} />
@@ -232,36 +214,15 @@ function ArticleView({ history, location, match }) {
                     <input type="hidden" id="content" name="content" value={content} />
 
                     <div>
-                        <FormControl variant="outlined" className={classes.formControl}>
-                            <InputLabel htmlFor="bbs-select" style={{ backgroundColor: 'white' }}>
-                                게시판
-                            </InputLabel>
-                            <Select
-                                native
-                                value={bbsId}
-                                onChange={changeBbsId}
-                                disabled={!editMode}
-                                // labelWidth={labelWidth}
-                                inputProps={{
-                                    name: 'bbs-select',
-                                    id: 'bbs-select',
-                                }}
-                                
-                            >
-                                <option value="" />
-                                {
-                                    bbsList.map(bbs => (
-                                        <option value={bbs.bbs_id}>{bbs.bbsname}</option>
-                                    ))
-                                }
-                            </Select>
-                            <FormHelperText id="my-helper-text" style={{display:'none'}}>test</FormHelperText>
-                        </FormControl>
+                        <div>
+                            <AppLine/>
+                        </div>
+
                         <TextField
-                            id="writerDisp"
-                            name="writerDisp"
-                            label="게시자"
-                            value={userName}
+                            id="deptDisp"
+                            name="deptDisp"
+                            label="기안부서"
+                            value={deptName}
                             className={classes.textFieldInput}
                             margin="normal"
                             variant="outlined"
@@ -272,7 +233,7 @@ function ArticleView({ history, location, match }) {
                         <TextField
                             id="deptDisp"
                             name="deptDisp"
-                            label="부서명"
+                            label="기안자"
                             value={deptName}
                             className={classes.textFieldInput}
                             margin="normal"
@@ -280,7 +241,89 @@ function ArticleView({ history, location, match }) {
                             InputProps={{
                                 readOnly: true,
                             }}
-                        />
+                        />&nbsp;  
+                        <TextField
+                            id="deptDisp"
+                            name="deptDisp"
+                            label="기안일"
+                            value={deptName}
+                            className={classes.textFieldInput}
+                            margin="normal"
+                            variant="outlined"
+                            InputProps={{
+                                readOnly: true,
+                            }}
+                        />&nbsp;
+
+                        <TextField
+                            height="50%"
+                            id="writerDisp"
+                            name="writerDisp"
+                            label="문서번호"
+                            value="asd"
+                            className={classes.textFieldInput}
+                            margin="normal"
+                            variant="outlined"
+                            InputProps={{
+                                readOnly: true,
+                            }}
+                        />&nbsp;
+                        <div>
+                            <FormControl variant="outlined" className={classes.formControl}>
+                                <InputLabel htmlFor="attCode" style={{ backgroundColor: 'white' }}>근태분류</InputLabel>
+                                <Select
+                                native
+                                value={attCode} 
+                                onChange={handleAttCode}
+                                inputProps={{
+                                    name: 'attCode',
+                                    id: 'attCode',
+                                }}
+                                >
+                                    <option value="" />
+                                    <option value={10}>연차</option>
+                                    <option value={20}>반차</option>
+                                    <option value={30}>특근</option>
+                                    <option value={30}>교육</option>
+                                </Select>
+                            </FormControl>
+                            
+                            <MuiPickersUtilsProvider libInstance={moment} utils={MomentUtils} locale={locale}>
+                                    <DatePicker
+                                        autoOk
+                                        margin="normal"
+                                        id="strDate"
+                                        name="strDate"
+                                        inputVariant="outlined"
+                                        label="시작일"
+                                        format="YYYY-MM-DD"
+                                        value={selectedStrDate}
+                                        onChange={handleDateStrChange}
+                                        style={{
+                                            width:'150px',
+                                            textAlign:'center'
+                                        }}
+
+                                    />&nbsp;
+                                    <DatePicker
+                                        autoOk
+                                        margin="normal"
+                                        id="endDate"
+                                        name="endDate"
+                                        inputVariant="outlined"
+                                        label="종료일"
+                                        format="YYYY-MM-DD"
+                                        value={selectedEndDate}
+                                        onChange={handleDateEndChange}
+                                        style={{
+                                            width:'150px',
+                                            textAlign:'center',
+                                        }}
+                                    />
+
+                            </MuiPickersUtilsProvider>
+
+                        </div>                        
                         <div>
                             <TextField
                                 id="title"
@@ -303,28 +346,9 @@ function ArticleView({ history, location, match }) {
                     <div id="fileAttach" className={classes.fileattach}>
                         <MWFileReader fileQueue={fileQueue} setFileQueue={setFileQueue} />
                     </div>
-                    <div className={classes.buttonInc}>
-                        {(editMode && articleId) &&
-                            <Button variant="contained" type="submit" color="secondary" className={classes.button} onClick={handleModify}>수정</Button>
-                        }
-                        {(editMode && !articleId) &&
-                            <Fragment>
-                                <Button variant="contained" type="submit" color="default" className={classes.button} onClick={handlePreview}>미리보기</Button>
-                                <Button variant="contained" type="submit" color="default" className={classes.button} onClick={handleTempSave}>임시저장</Button>
-                                <Button variant="contained" type="submit" color="secondary" className={classes.button} >글쓰기</Button>
-                            </Fragment>
-                        }
-                        {!editMode &&
-                            <Fragment>
-                                <Button variant="contained" type="submit" color="secondary" className={classes.button} onClick={() => { setEditMode(true) }}>수정</Button>
-                                <Button variant="contained" type="submit" color="default" className={classes.button} onClick={handleDelete}>삭제</Button>
-                            </Fragment>
-                        }
-                    </div>
                 </form>
-            </div>
         </div>
     )
 }
 
-export default ArticleView
+export default WorkForm
