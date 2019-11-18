@@ -1,10 +1,10 @@
 import React, { useState, useEffect, useCallback, Fragment } from 'react'
 import MWEditor from 'components/editor/MWEditor'
-import MWFileReader from 'components/file/MWFileReader'
+import MWFileUpload from 'components/file/MWFileUpload'
 import Button from '@material-ui/core/Button';
 import Select from '@material-ui/core/Select';
 import FormControl from '@material-ui/core/FormControl';
-import FormHelperText  from '@material-ui/core/FormHelperText' 
+import FormHelperText from '@material-ui/core/FormHelperText'
 import InputLabel from '@material-ui/core/InputLabel';
 import TextField from '@material-ui/core/TextField';
 import { makeStyles } from '@material-ui/core/styles';
@@ -125,7 +125,7 @@ function ArticleView({ history, location, match }) {
         },
         fileattach: {
             width: '100%',
-            height: '100px',
+            height: '100%',
         },
         formControl: {
             width: '150px',
@@ -151,7 +151,7 @@ function ArticleView({ history, location, match }) {
         console.log('handleSubmit >> ')
         e.preventDefault();
 
-        if(validate()){
+        if (validate()) {
             return false;
         }
         // console.log('handleSubmit',e.target);
@@ -169,7 +169,7 @@ function ArticleView({ history, location, match }) {
 
         axios.post('/api/article', data)
             .then(res => {
-                console.log(res,res.data)
+                console.log(res, res.data)
                 if (res.data) {
                     history.push(res.data.nexturl);
                 }
@@ -179,7 +179,7 @@ function ArticleView({ history, location, match }) {
         console.log('handleModify eeee > ', e)
         e.preventDefault();
 
-        if(validate()){
+        if (validate()) {
             return false;
         }
 
@@ -208,14 +208,14 @@ function ArticleView({ history, location, match }) {
             .then(res => {
                 console.log(res)
                 if (res.data) {
-                     history.push(res.data.nexturl);
+                    history.push(res.data.nexturl);
                 }
             });
 
     }
 
-    const validate =() => {
-        if(bbsId){
+    const validate = () => {
+        if (bbsId) {
             return true;
         }
 
@@ -246,7 +246,7 @@ function ArticleView({ history, location, match }) {
                                     name: 'bbs-select',
                                     id: 'bbs-select',
                                 }}
-                                
+
                             >
                                 <option value="" />
                                 {
@@ -255,7 +255,7 @@ function ArticleView({ history, location, match }) {
                                     ))
                                 }
                             </Select>
-                            <FormHelperText id="my-helper-text" style={{display:'none'}}>test</FormHelperText>
+                            <FormHelperText id="my-helper-text" style={{ display: 'none' }}>test</FormHelperText>
                         </FormControl>
                         <TextField
                             id="writerDisp"
@@ -297,11 +297,11 @@ function ArticleView({ history, location, match }) {
                             />
                         </div>
                     </div>
+                    <div id="fileAttach" className={classes.fileattach}>
+                        <MWFileUpload fileQueue={fileQueue} setFileQueue={setFileQueue} />
+                    </div>
                     <div id="_editor" className={classes.editor}>
                         <MWEditor mode={editMode} content={content} setContent={setContent} />
-                    </div>
-                    <div id="fileAttach" className={classes.fileattach}>
-                        <MWFileReader fileQueue={fileQueue} setFileQueue={setFileQueue} />
                     </div>
                     <div className={classes.buttonInc}>
                         {(editMode && articleId) &&
