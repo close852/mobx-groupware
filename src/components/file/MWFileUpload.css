@@ -1,8 +1,0 @@
-.draggable {
-    cursor: move; /* fallback: no `url()` support or images disabled */
-    cursor: grab; /* W3C standards syntax, all modern browser */
-}
-
-.draggable:active {
-    cursor: grabbing;
-}

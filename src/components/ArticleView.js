@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback, Fragment } from 'react'
 import MWEditor from 'components/editor/MWEditor'
-import MWFileUpload from 'components/file/MWFileUpload'
+import MWFileModule from 'components/file/MWFileModule'
 import Button from '@material-ui/core/Button';
 import Select from '@material-ui/core/Select';
 import FormControl from '@material-ui/core/FormControl';
@@ -8,10 +8,14 @@ import FormHelperText from '@material-ui/core/FormHelperText'
 import InputLabel from '@material-ui/core/InputLabel';
 import TextField from '@material-ui/core/TextField';
 import { makeStyles } from '@material-ui/core/styles';
+import ArticlePreview from 'components/ArticlePreview'
+import Modal from '@material-ui/core/Modal';
+import Backdrop from '@material-ui/core/Backdrop';
+import Fade from '@material-ui/core/Fade';
+
 import axios from 'axios'
 //https://rinae.dev/posts/a-complete-guide-to-useeffect-ko
 function ArticleView({ history, location, match }) {
-
 
     console.log('match.params.id', match.params.id)
     const [bbsList, setBbsList] = useState([]);
@@ -27,6 +31,7 @@ function ArticleView({ history, location, match }) {
     const [fileQueue, setFileQueue] = useState([]);
 
     const [editMode, setEditMode] = useState(false);
+    const [open, setOpen] = useState(false);
 
     const getArticleFetchUrl = useCallback(() => {
         return axios.get(`/api/article/${match.params.id}`);
@@ -132,16 +137,37 @@ function ArticleView({ history, location, match }) {
             marginTop: theme.spacing(2),
             marginRight: '4px',
         },
-
+        modal: {
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+        },
+        paper: {
+            backgroundColor: theme.palette.background.paper,
+            border: '2px solid #000',
+            boxShadow: theme.shadows[5],
+            padding: theme.spacing(2, 4, 3),
+        },
 
     }));
     const classes = useStyles();
+
+
+    const handleOpen = () => {
+        setOpen(true);
+    };
+
+    const handleClose = () => {
+        setOpen(false);
+    };
+
 
     //1. 본문내용 전송(기본항목, 에디터 본문)
     //2. file있다면, return 받은 articleid로 fileUpload
     const handlePreview = (e) => {
         e.preventDefault();
         console.log('handlePreview');
+        handleOpen();
     }
     const handleTempSave = (e) => {
         e.preventDefault();
@@ -298,7 +324,7 @@ function ArticleView({ history, location, match }) {
                         </div>
                     </div>
                     <div id="fileAttach" className={classes.fileattach}>
-                        <MWFileUpload fileQueue={fileQueue} setFileQueue={setFileQueue} />
+                        <MWFileModule mode={editMode} fileQueue={fileQueue} setFileQueue={setFileQueue} />
                     </div>
                     <div id="_editor" className={classes.editor}>
                         <MWEditor mode={editMode} content={content} setContent={setContent} />
@@ -322,6 +348,10 @@ function ArticleView({ history, location, match }) {
                         }
                     </div>
                 </form>
+            </div>
+
+            <div>
+                {<ArticlePreview open={open} handleClose={handleClose} bbsId={bbsId} userName={userName} deptName={deptName} title={title} content={content} />}
             </div>
         </div>
     )

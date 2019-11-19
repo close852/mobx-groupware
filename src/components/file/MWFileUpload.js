@@ -4,7 +4,6 @@ import PropTypes from 'prop-types';
 import Button from '@material-ui/core/Button';
 import { makeStyles } from '@material-ui/core/styles';
 import axios from 'axios'
-import './MWFileUpload.css'
 //예제
 //https://medium.com/@habibmahbub/basic-file-reader-with-react-js-80bf48d574da
 //https://dotnetthoughts.net/how-to-upload-multiple-files-with-html5-and-jquery/
