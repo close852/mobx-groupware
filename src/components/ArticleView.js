@@ -9,15 +9,12 @@ import InputLabel from '@material-ui/core/InputLabel';
 import TextField from '@material-ui/core/TextField';
 import { makeStyles } from '@material-ui/core/styles';
 import ArticlePreview from 'components/ArticlePreview'
-import Modal from '@material-ui/core/Modal';
-import Backdrop from '@material-ui/core/Backdrop';
-import Fade from '@material-ui/core/Fade';
 
 import axios from 'axios'
 //https://rinae.dev/posts/a-complete-guide-to-useeffect-ko
 function ArticleView({ history, location, match }) {
 
-    console.log('match.params.id', match.params.id)
+    // console.log('match.params.id', match.params.id)
     const [bbsList, setBbsList] = useState([]);
     const [articleId, setArticleId] = useState('');
     const [title, setTitle] = useState('');
@@ -27,7 +24,10 @@ function ArticleView({ history, location, match }) {
     const [userName, setUserName] = useState('');
     const [deptId, setDeptId] = useState('');
     const [deptName, setDeptName] = useState('');
+    const [status, setStatus] = useState('');
 
+    const [oriFileList, setOriFileList] = useState([]);
+    const [delFileList, setDelFileList] = useState([]);
     const [fileQueue, setFileQueue] = useState([]);
 
     const [editMode, setEditMode] = useState(false);
@@ -41,17 +41,31 @@ function ArticleView({ history, location, match }) {
         return axios.get(`/api/bbs`);
     }, []);  // ✅ 콜백 deps는 OK
 
-    useEffect(() => {
-        const bbsData = getBbsFetchUrl();
-        bbsData.then(res => {
-            console.log('bbsData > res.data', res.data)
-            setBbsList(res.data);
-        })
+    const setFileQueueData = useCallback((files) => {
+        let oriFiles = [];
+        let tempFileList = [];
+        files.forEach((file, idx) => {
+            // console.log('file >> ', file, idx)
+            oriFiles.push({
+                name: file.FILE_NAME,
+                size: file.FILE_SIZE,
+                fileId: file.FILE_ID,
+            })
+            tempFileList.push(file.FILE_ID)
+        });
+        console.log('oriFiles > ', oriFiles.length, oriFiles);
+        setOriFileList(tempFileList);
+        setFileQueue([...oriFiles])
+    }, [setOriFileList, setFileQueue])
 
+    useEffect(() => {
         if (match.params.id) {
             const articleData = getArticleFetchUrl();
             articleData.then(res => {
-                const article = res.data[0];
+                console.log('res.data >>', res.data, res)
+                const article = res.data.data[0];
+                const files = res.data.files;
+                console.log('files >> ', files.length, files)
                 if (article) {
                     console.log(article)
                     setArticleId(article.article_id);
@@ -64,6 +78,12 @@ function ArticleView({ history, location, match }) {
                     setUserName(article.username);
                     setDeptId(article.dept_id);
                     setDeptName(article.deptname);
+                    setStatus(article.status);
+
+                    console.log('files.length >> ', files.length, files)
+                    if (files.length) {
+                        setFileQueueData(files);
+                    }
                 } else {
                     // setBbsId(article.bbs_id);
                     initForms();
@@ -73,11 +93,20 @@ function ArticleView({ history, location, match }) {
             initForms();
         }
         // ... 데이터를 불러와서 무언가를 한다 ...
-    }, [getArticleFetchUrl, getBbsFetchUrl, location.search, match.params.id]); // ✅ 이펙트의 deps는 OK
+    }, [getArticleFetchUrl, match.params.id, setFileQueueData]); // ✅ 이펙트의 deps는 OK
 
+    useEffect(() => {
+        const bbsData = getBbsFetchUrl();
+        bbsData.then(res => {
+            console.log('bbsData > res.data', res.data)
+            setBbsList(res.data);
+        })
+
+    }, [getBbsFetchUrl])
     const initForms = () => {
         setArticleId('');
         setBbsId('');
+        setStatus('END');
 
         setTitle('');
         setContent('');
@@ -172,6 +201,27 @@ function ArticleView({ history, location, match }) {
     const handleTempSave = (e) => {
         e.preventDefault();
         console.log('handleTempSave');
+        setStatus('TEMP');
+        const data = new FormData(e.target);
+        //파일추가만포함
+        //더 추가되야하는것 : 수정로직에서 기존 파일,신규파일,삭제파일 구분처리 필요,
+        fileQueue.forEach((value, idx, arr) => {
+            data.append('upload', value);
+        })
+
+        console.log(data.entries());
+        for (var pair of data.entries()) {
+            console.log(pair[0] + ', ' + pair[1]);
+        }
+
+        axios.post('/api/article', data)
+            .then(res => {
+                console.log(res, res.data)
+                if (res.data) {
+                    history.push(res.data.nexturl);
+                }
+            });
+
     }
     const handleSubmit = (e) => {
         console.log('handleSubmit >> ')
@@ -187,6 +237,7 @@ function ArticleView({ history, location, match }) {
         //더 추가되야하는것 : 수정로직에서 기존 파일,신규파일,삭제파일 구분처리 필요,
         fileQueue.forEach((value, idx, arr) => {
             data.append('upload', value);
+            //파일명JSON value에서 이름 꺼내서 순서랑, 상태 json 만들어서 넣기
         })
         console.log(data.entries());
         for (var pair of data.entries()) {
@@ -208,7 +259,6 @@ function ArticleView({ history, location, match }) {
         if (validate()) {
             return false;
         }
-
 
         const form = document.bbsForm;
         const data = new FormData(form);
@@ -256,6 +306,7 @@ function ArticleView({ history, location, match }) {
                     <input type="hidden" id="user_id" name="user_id" value={userId} />
                     <input type="hidden" id="dept_id" name="dept_id" value={deptId} />
                     <input type="hidden" id="content" name="content" value={content} />
+                    <input type="hidden" id="status" name="status" value={status} />
 
                     <div>
                         <FormControl variant="outlined" className={classes.formControl}>

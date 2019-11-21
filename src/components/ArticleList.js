@@ -19,7 +19,11 @@ function BbsList({ location, match, ArticleStore }) {
     //    console.log('match.params.id', match.params.id)
 
     const getArticleFetchUrl = useCallback(() => {
-        return axios.get(`/api/article?bbs_id=${match.params.id}`);
+        if (match.params.id === "temp") {
+            return axios.get(`/api/article?status=${match.params.id}`);
+        } else {
+            return axios.get(`/api/article?bbs_id=${match.params.id}`);
+        }
     }, [match.params.id]);  // ✅ 콜백 deps는 OK
 
 

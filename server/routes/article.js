@@ -1,6 +1,8 @@
 import express from 'express'
 import fs from 'fs'
 import articleDAO from '../models/articleDAO'
+import fileDAO from '../models/fileDAO'
+
 import {
     requireRole
 } from '../utils/roleUtils'
@@ -25,7 +27,11 @@ router.get('/:id', async (req, res) => {
         id
     } = req.params;
     const result = await articleDAO.findArticleById(id);
-    return res.send(result)
+    const files = await fileDAO.findAllByRefId(id);
+    return res.json({
+        data: result,
+        files: files
+    })
 })
 
 
@@ -36,7 +42,8 @@ router.get('/', async (req, res) => {
         // sortType,
         // pageSize,
         // page,
-        bbs_id
+        bbs_id,
+        status
     } = req.query;
     console.log('req.params >>>>> ', req.query, req.body)
     // const paging = {
@@ -45,15 +52,34 @@ router.get('/', async (req, res) => {
     //     startWith: (Number(page) - 1) * pageSize,
     //     pageSize: pageSize?pageSize:'0'
     // }
-    console.log('req.query > ', paging(req.query), req.query)
+    // console.log('req.query > ', paging(req.query), req.query)
     const result = await articleDAO.findArticleByBbsId(bbs_id);
+    return res.send(result)
+})
+router.get('/temp', async (req, res) => {
+    const {
+        // orderBy,
+        // sortType,
+        // pageSize,
+        // page,
+        status
+    } = req.query;
+    console.log('req.params >>>>> ', req.query, req.body)
+    // const paging = {
+    //     orderBy,
+    //     sortType,
+    //     startWith: (Number(page) - 1) * pageSize,
+    //     pageSize: pageSize?pageSize:'0'
+    // }
+    // console.log('req.query > ', paging(req.query), req.query)
+    const result = await articleDAO.findArticleByStatus(status);
     return res.send(result)
 })
 
 
 
 /**
- * 게시글 조회
+ * 게시글 삭제
  */
 router.delete('/:id', async (req, res) => {
     const {

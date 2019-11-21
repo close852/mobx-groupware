@@ -22,7 +22,7 @@ const findAllByRefId = (refid) => {
 }
 
 const insertFile = ({ fileid, refid, filename, filepath, filesize, sortno, type }) => {
-    let sql = `INSERT INTO FILE (FILE_ID, REF_ID, FILE_NAME, filepath, filesize, sortno,type )  VALUES (? , ? , ? , ?, ?, ?, ? )`;
+    let sql = `INSERT INTO FILE (FILE_ID, REF_ID, FILE_NAME, filepath, file_size, sortno,type )  VALUES (? , ? , ? , ?, ?, ?, ? )`;
     let args = [fileid, refid, filename, filepath, filesize, sortno, type];
 
     try {

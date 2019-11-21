@@ -29,7 +29,7 @@ import MyUploadAdapter from './MyUploadAdapter'
 
 import './MWEditor.css'
 function MWEditor({ mode, content, setContent }) {
-    console.log('mode', mode)
+    // console.log('mode', mode)
     const _onChange = (event, editor) => {
         setContent(editor.getData())
     }
@@ -48,10 +48,10 @@ function MWEditor({ mode, content, setContent }) {
             return new MyUploadAdapter(loader);
         };
     }
-    console.log('mode > ', mode, mode ? 1 : 2)
+    // console.log('mode > ', mode, mode ? 1 : 2)
     // const defaultToolbar = mode ? ['heading', '|', 'bold', 'italic', '|', 'bulletedList', 'numberedList', '|', 'imageUpload', 'insertTable', '|', 'alignment:left', 'alignment:right', 'alignment:center', 'alignment:justify', 'link', 'blockQuote', '|', 'undo', 'redo', 'highlight'] : [];
     const editorConfig = {
-        plugins: [Essentials, Highlight, Table,TableToolbar, Link, Paragraph, Alignment, Heading, Image, Bold, ImageResize, Italic, ImageUpload, ImageToolbar, ImageStyle, ImageCaption, BlockQuote, List],
+        plugins: [Essentials, Highlight, Table, TableToolbar, Link, Paragraph, Alignment, Heading, Image, Bold, ImageResize, Italic, ImageUpload, ImageToolbar, ImageStyle, ImageCaption, BlockQuote, List],
         toolbar: ['heading', '|', 'bold', 'italic', '|', 'bulletedList', 'numberedList', '|', 'imageUpload', 'insertTable', '|', 'alignment:left', 'alignment:right', 'alignment:center', 'alignment:justify', 'link', 'blockQuote', '|', 'undo', 'redo', 'highlight'],
         heading: {
             options: [
@@ -61,7 +61,7 @@ function MWEditor({ mode, content, setContent }) {
             ]
         },
         table: {
-            contentToolbar: [ 'tableColumn', 'tableRow', 'mergeTableCells' ]
+            contentToolbar: ['tableColumn', 'tableRow', 'mergeTableCells']
         },
 
         image: {

@@ -47,7 +47,7 @@ function LeftMenuBbs({ history }) {
     }
     const menus = [
         {
-            menuGroup: "App",
+            menuGroup: "Bbs",
             menuId: "qweasdasdasd1",
             menuName: "공지사항",
             sortno: 1,
@@ -55,12 +55,18 @@ function LeftMenuBbs({ history }) {
             divider: 'N'
         },
         {
-            menuGroup: "App",
+            menuGroup: "Bbs",
             menuId: "test2",
             menuName: "자유게시판",
             divider: 'N',
             link: '/bbs/list/2',
-
+        },
+        {
+            menuGroup: "Bbs",
+            menuId: "test2",
+            menuName: "자유게시판",
+            divider: 'N',
+            link: '/bbs/list/temp',
         }
     ]
     const classes = useStyles();

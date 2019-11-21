@@ -40,15 +40,25 @@ const findArticleByBbsId = (bbs_id) => {
     let args = [bbs_id];
     return db.query(sql, args).catch(err => err);
 }
+const findArticleByStatus = (status) => {
+    let sql = ` SELECT b.bbsname,article_id,content,title, indent,a.sortno, up_article_id, a.bbs_id,a.regdate,u.user_id,u.username,u.dept_id,u.deptname`;
+    sql += ` FROM BBS b, ARTICLE a , v_userinfo u `
+    sql += ` WHERE a.STATUS = ? `
+    sql += ` AND a.user_id = u.user_id `
+    sql += ` AND a.bbs_id = b.bbs_id `
+    sql += ` ORDER BY REGDATE DESC `
+    let args = [status];
+    return db.query(sql, args).catch(err => err);
+}
 
 
-const insertArticle = ({ title, content, bbs_id, user_id, ref_article_id }) => {
+const insertArticle = ({ title, content, bbs_id, user_id, ref_article_id, status }) => {
     //seq 만들어서 넣기
     const article_id = uuid();
     const refId = ref_article_id ? article_id : ref_article_id;
-
-    let sql = `INSERT INTO ARTICLE (ARTICLE_ID, TITLE, CONTENT, BBS_ID, USER_ID, REF_ARTICLE_ID)  VALUES (?, ? , ? , ? , ? , ? )`;
-    let args = [article_id, title, content, bbs_id, user_id, refId];
+    status = status ? status : 'temp';
+    let sql = `INSERT INTO ARTICLE (ARTICLE_ID, TITLE, CONTENT, BBS_ID, USER_ID, REF_ARTICLE_ID, STATUS)  VALUES (?, ? , ? , ? , ? , ?, ? )`;
+    let args = [article_id, title, content, bbs_id, user_id, refId, status];
 
     return db.query(sql, args).catch(err => err);
 }
@@ -70,5 +80,6 @@ export default ({
     updateArticle,
     findArticleByBbsId,
     updateDynamicArticle,
-    deleteArticleById
+    deleteArticleById,
+    findArticleByStatus
 })
