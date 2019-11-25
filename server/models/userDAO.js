@@ -70,11 +70,22 @@ const updateDynamicUser = async (args, userId) => {
         return err;
     }
 }
+
+const findUserByDeptId = ({ id }) => {
+    let sql = `SELECT * FROM USER WHERE DEPT_ID = ?`;
+    let args = [id];
+    try {
+        return db.query(sql, args).catch(err => err);
+    } catch (err) {
+        return err;
+    }
+}
 export default ({
     getUserById,
     insertUser,
     getUserByAuth,
     getUserByLoginId,
     updateUser,
-    updateDynamicUser
+    updateDynamicUser,
+    findUserByDeptId,
 })

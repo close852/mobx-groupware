@@ -1,9 +1,9 @@
-import React, { useState, useCallback  } from 'react'
+import React, { useState, useCallback } from 'react'
 import MWEditor from 'components/editor/MWEditor'
 import MWFileReader from 'components/file/MWFileReader'
 import TextField from '@material-ui/core/TextField';
 import { makeStyles } from '@material-ui/core/styles';
-import {AppLine, AppDate} from 'containers/app'
+import { AppLine, AppDate } from 'containers/app'
 import axios from 'axios'
 import Grid from '@material-ui/core/Grid';
 import moment from "moment";
@@ -12,7 +12,7 @@ import {
     MuiPickersUtilsProvider,
     DatePicker
 } from '@material-ui/pickers';
-import {FormControl, Select, InputLabel} from '@material-ui/core';
+import { FormControl, Select, InputLabel } from '@material-ui/core';
 
 moment.locale("ko"); // it is required to select default locale manually
 
@@ -22,7 +22,7 @@ function WorkForm({ history, location, match, appId }) {
 
     const [locale, setLocale] = useState("ko");
 
-    console.log('moment().format() > ',moment().format() )
+    console.log('moment().format() > ', moment().format())
     console.log('match.params.id', match.params.id)
     const [selectedStrDate, setSelectedStrDate] = React.useState(new Date());
     const [selectedEndDate, setSelectedEndDate] = React.useState(new Date());
@@ -49,18 +49,18 @@ function WorkForm({ history, location, match, appId }) {
         return axios.get(`/api/bbs`);
     }, []);  // ✅ 콜백 deps는 OK
 
-    const handleAttCode =e=>{
+    const handleAttCode = e => {
         setAttCode(e.target.value);
     }
     const drawerWidth = 240;
     const handleDateStrChange = date => {
         setSelectedStrDate(date);
-      };
-      const handleDateEndChange = date => {
+    };
+    const handleDateEndChange = date => {
         setSelectedEndDate(date);
-      };
+    };
 
-      
+
     const changeBbsId = (e) => {
         setBbsId(e.target.value)
     }
@@ -71,8 +71,8 @@ function WorkForm({ history, location, match, appId }) {
         formControl: {
             margin: theme.spacing(1),
             minWidth: 120,
-          },
-        
+        },
+
         container: {
             display: 'flex',
             flexWrap: 'wrap',
@@ -134,7 +134,7 @@ function WorkForm({ history, location, match, appId }) {
         console.log('handleSubmit >> ')
         e.preventDefault();
 
-        if(validate()){
+        if (validate()) {
             return false;
         }
         // console.log('handleSubmit',e.target);
@@ -152,7 +152,7 @@ function WorkForm({ history, location, match, appId }) {
 
         axios.post('/api/article', data)
             .then(res => {
-                console.log(res,res.data)
+                console.log(res, res.data)
                 if (res.data) {
                     history.push(res.data.nexturl);
                 }
@@ -162,7 +162,7 @@ function WorkForm({ history, location, match, appId }) {
         console.log('handleModify eeee > ', e)
         e.preventDefault();
 
-        if(validate()){
+        if (validate()) {
             return false;
         }
 
@@ -191,14 +191,14 @@ function WorkForm({ history, location, match, appId }) {
             .then(res => {
                 console.log(res)
                 if (res.data) {
-                     history.push(res.data.nexturl);
+                    history.push(res.data.nexturl);
                 }
             });
 
     }
 
-    const validate =() => {
-        if(bbsId){
+    const validate = () => {
+        if (bbsId) {
             return true;
         }
 
@@ -206,147 +206,147 @@ function WorkForm({ history, location, match, appId }) {
     }
     return (
         <div >
-                <form id="bbsForm" name="bbsForm" onSubmit={handleSubmit} >
-                    <input type="hidden" id="nexturl" name="nexturl" value={`/bbs/list/${bbsId}`} />
-                    <input type="hidden" id="article_id" name="article_id" value={articleId} />
-                    <input type="hidden" id="user_id" name="user_id" value={userId} />
-                    <input type="hidden" id="dept_id" name="dept_id" value={deptId} />
-                    <input type="hidden" id="content" name="content" value={content} />
+            <form id="bbsForm" name="bbsForm" onSubmit={handleSubmit} >
+                <input type="hidden" id="nexturl" name="nexturl" value={`/bbs/list/${bbsId}`} />
+                <input type="hidden" id="article_id" name="article_id" value={articleId} />
+                <input type="hidden" id="user_id" name="user_id" value={userId} />
+                <input type="hidden" id="dept_id" name="dept_id" value={deptId} />
+                <input type="hidden" id="content" name="content" value={content} />
 
+                <div>
                     <div>
-                        <div>
-                            <AppLine/>
-                        </div>
+                        <AppLine />
+                    </div>
 
-                        <TextField
-                            id="deptDisp"
-                            name="deptDisp"
-                            label="기안부서"
-                            value={deptName}
-                            className={classes.textFieldInput}
-                            margin="normal"
-                            variant="outlined"
-                            InputProps={{
-                                readOnly: true,
-                            }}
-                        />&nbsp;
-                        <TextField
-                            id="deptDisp"
-                            name="deptDisp"
-                            label="기안자"
-                            value={deptName}
-                            className={classes.textFieldInput}
-                            margin="normal"
-                            variant="outlined"
-                            InputProps={{
-                                readOnly: true,
-                            }}
-                        />&nbsp;  
-                        <TextField
-                            id="deptDisp"
-                            name="deptDisp"
-                            label="기안일"
-                            value={deptName}
-                            className={classes.textFieldInput}
-                            margin="normal"
-                            variant="outlined"
-                            InputProps={{
-                                readOnly: true,
-                            }}
-                        />&nbsp;
+                    <TextField
+                        id="deptDisp"
+                        name="deptDisp"
+                        label="기안부서"
+                        value={deptName}
+                        className={classes.textFieldInput}
+                        margin="normal"
+                        variant="outlined"
+                        InputProps={{
+                            readOnly: true,
+                        }}
+                    />
+                    <TextField
+                        id="deptDisp"
+                        name="deptDisp"
+                        label="기안자"
+                        value={deptName}
+                        className={classes.textFieldInput}
+                        margin="normal"
+                        variant="outlined"
+                        InputProps={{
+                            readOnly: true,
+                        }}
+                    />
+                    <TextField
+                        id="deptDisp"
+                        name="deptDisp"
+                        label="기안일"
+                        value={deptName}
+                        className={classes.textFieldInput}
+                        margin="normal"
+                        variant="outlined"
+                        InputProps={{
+                            readOnly: true,
+                        }}
+                    />
 
-                        <TextField
-                            height="50%"
-                            id="writerDisp"
-                            name="writerDisp"
-                            label="문서번호"
-                            value="asd"
-                            className={classes.textFieldInput}
-                            margin="normal"
-                            variant="outlined"
-                            InputProps={{
-                                readOnly: true,
-                            }}
-                        />&nbsp;
-                        <div>
-                            <FormControl variant="outlined" className={classes.formControl}>
-                                <InputLabel htmlFor="attCode" style={{ backgroundColor: 'white' }}>근태분류</InputLabel>
-                                <Select
+                    <TextField
+                        height="50%"
+                        id="writerDisp"
+                        name="writerDisp"
+                        label="문서번호"
+                        value="asd"
+                        className={classes.textFieldInput}
+                        margin="normal"
+                        variant="outlined"
+                        InputProps={{
+                            readOnly: true,
+                        }}
+                    />
+                    <div>
+                        <FormControl variant="outlined" className={classes.formControl}>
+                            <InputLabel htmlFor="attCode" style={{ backgroundColor: 'white' }}>근태분류</InputLabel>
+                            <Select
                                 native
-                                value={attCode} 
+                                value={attCode}
                                 onChange={handleAttCode}
                                 inputProps={{
                                     name: 'attCode',
                                     id: 'attCode',
                                 }}
-                                >
-                                    <option value="" />
-                                    <option value={10}>연차</option>
-                                    <option value={20}>반차</option>
-                                    <option value={30}>특근</option>
-                                    <option value={30}>교육</option>
-                                </Select>
-                            </FormControl>
-                            
-                            <MuiPickersUtilsProvider libInstance={moment} utils={MomentUtils} locale={locale}>
-                                    <DatePicker
-                                        autoOk
-                                        margin="normal"
-                                        id="strDate"
-                                        name="strDate"
-                                        inputVariant="outlined"
-                                        label="시작일"
-                                        format="YYYY-MM-DD"
-                                        value={selectedStrDate}
-                                        onChange={handleDateStrChange}
-                                        style={{
-                                            width:'150px',
-                                            textAlign:'center'
-                                        }}
+                            >
+                                <option value="" />
+                                <option value={10}>연차</option>
+                                <option value={20}>반차</option>
+                                <option value={30}>특근</option>
+                                <option value={30}>교육</option>
+                            </Select>
+                        </FormControl>
 
-                                    />&nbsp;
-                                    <DatePicker
-                                        autoOk
-                                        margin="normal"
-                                        id="endDate"
-                                        name="endDate"
-                                        inputVariant="outlined"
-                                        label="종료일"
-                                        format="YYYY-MM-DD"
-                                        value={selectedEndDate}
-                                        onChange={handleDateEndChange}
-                                        style={{
-                                            width:'150px',
-                                            textAlign:'center',
-                                        }}
-                                    />
-
-                            </MuiPickersUtilsProvider>
-
-                        </div>                        
-                        <div>
-                            <TextField
-                                id="title"
-                                name="title"
-                                label="문서제목"
-                                value={title}
-                                onChange={(e) => { setTitle(e.target.value); }}
-                                className={classes.textField}
+                        <MuiPickersUtilsProvider libInstance={moment} utils={MomentUtils} locale={locale}>
+                            <DatePicker
+                                autoOk
                                 margin="normal"
-                                variant="outlined"
-                                InputProps={{
-                                    readOnly: !editMode,
+                                id="strDate"
+                                name="strDate"
+                                inputVariant="outlined"
+                                label="시작일"
+                                format="YYYY-MM-DD"
+                                value={selectedStrDate}
+                                onChange={handleDateStrChange}
+                                style={{
+                                    width: '150px',
+                                    textAlign: 'center'
+                                }}
+
+                            />&nbsp;
+                                    <DatePicker
+                                autoOk
+                                margin="normal"
+                                id="endDate"
+                                name="endDate"
+                                inputVariant="outlined"
+                                label="종료일"
+                                format="YYYY-MM-DD"
+                                value={selectedEndDate}
+                                onChange={handleDateEndChange}
+                                style={{
+                                    width: '150px',
+                                    textAlign: 'center',
                                 }}
                             />
-                        </div>
+
+                        </MuiPickersUtilsProvider>
+
                     </div>
-                    <div id="_editor" className={classes.editor}>
-                        <MWEditor mode={editMode} content={content} setContent={setContent} />
+                    <div>
+                        <TextField
+                            id="title"
+                            name="title"
+                            label="문서제목"
+                            value={title}
+                            onChange={(e) => { setTitle(e.target.value); }}
+                            className={classes.textField}
+                            margin="normal"
+                            variant="outlined"
+                            InputProps={{
+                                readOnly: !editMode,
+                            }}
+                        />
                     </div>
-                    <div id="fileAttach" className={classes.fileattach}>
-                        <MWFileReader fileQueue={fileQueue} setFileQueue={setFileQueue} />
-                    </div>
-                </form>
+                </div>
+                <div id="_editor" className={classes.editor}>
+                    <MWEditor mode={editMode} content={content} setContent={setContent} />
+                </div>
+                <div id="fileAttach" className={classes.fileattach}>
+                    <MWFileReader fileQueue={fileQueue} setFileQueue={setFileQueue} />
+                </div>
+            </form>
         </div>
     )
 }

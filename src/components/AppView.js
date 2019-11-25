@@ -1,25 +1,30 @@
-import React,{useState,useEffect,useCallback} from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import AppButton from './AppButton';
 import { makeStyles } from '@material-ui/core/styles';
 import MWEditor from 'components/editor/MWEditor'
+import queryString from 'query-string'
 import { AppContent } from '.';
-function AppView({ history , location, match }) {
-    const [content,setContent] = useState('test123123 <editor/>222');
-    let editMode =true;
+function AppView({ history, location, match }) {
+    const [content, setContent] = useState('test123123 <editor/>222');
+    let editMode = true;
     const initEditor = "test";
-    console.log('content >>',content)
+    console.log('content >>', content)
     const [formId, setFormId] = useState('')
     const [appId, setAppId] = useState('')
-    
-    
+    const [appLine, setAppLine] = useState([])
+
     // const repalceEditor = useCallback(() => {
     //     return content.replace('<editor/>',<MWEditor mode={editMode} content={initEditor} setContent={setContent}/>);
     // }, [content, editMode]);  // ✅ 콜백 deps는 OK
-    
+
     useEffect(() => {
-        setFormId('WorkForm')
-        setAppId('')
-    }, []); // ✅ 이펙트의 deps는 OK
+        if (location.search) {
+            const query = queryString.parse(location.search);
+            console.log('location,match>> ', query)
+            setFormId(query.formid)
+            setAppId(query.appid)
+        }
+    }, [location, match]); // ✅ 이펙트의 deps는 OK
 
     const drawerWidth = 240;
     const useStyles = makeStyles(theme => ({
@@ -71,9 +76,9 @@ function AppView({ history , location, match }) {
     return (
         <div className={classes.root}>
             <div className={classes.body}>
-                <AppButton />
+                <AppButton appLine={appLine} setAppLine={setAppLine} />
                 <div className={classes.content}>
-                    <AppContent formId={formId} appId={appId} history={history} location={location} match={match}/>
+                    <AppContent formId={formId} appId={appId} history={history} location={location} match={match} />
                 </div>
             </div>
         </div>

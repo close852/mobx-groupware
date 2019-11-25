@@ -1,7 +1,7 @@
-import React,{useState} from 'react';
-import {NavLink} from 'react-router-dom'
+import React, { useState } from 'react';
+import { NavLink } from 'react-router-dom'
 // import PropTypes from 'prop-types';
-import {  makeStyles } from '@material-ui/core/styles';
+import { makeStyles } from '@material-ui/core/styles';
 import TreeNav from 'tree/TreeNav'
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
@@ -35,14 +35,14 @@ const columns = [
 
 /* LEFT 테이블 DATA*/
 const rows = [
-    createData('FORM1','11','일반양식','기안문', ''),
-    createData('FORM2','12','근태양식','근태신청서', ''),
+    createData('DraftForm', '11', '일반양식', '기안문', ''),
+    createData('WorkForm', '12', '근태양식', '근태신청서', ''),
 
 ];
 
 
-function createData(formid,groupid,formgroup, formname, description) {
-    return { formid,groupid,formgroup, formname, description };
+function createData(formid, groupid, formgroup, formname, description) {
+    return { formid, groupid, formgroup, formname, description };
 }
 
 
@@ -60,18 +60,18 @@ const useStyles = makeStyles(theme => ({
     },
     tree: {
         border: '1px solid black',
-        width:'calc(30%)',
-        height:'calc(50%)'
+        width: 'calc(30%)',
+        height: 'calc(50%)'
 
     },
     formlist: {
         border: '1px solid black',
-        width:'calc(70%)',
-        height:'calc(50%)'
+        width: 'calc(70%)',
+        height: 'calc(50%)'
     },
-    link:{
-        textDecoration:'none',
-        color:'black'
+    link: {
+        textDecoration: 'none',
+        color: 'black'
     }
 }));
 
@@ -79,7 +79,7 @@ const useStyles = makeStyles(theme => ({
 
 function FormList() {
     const classes = useStyles();
-    const [group,setGroup] =useState((items[0].children && items[0].children[0].id) || '*');
+    const [group, setGroup] = useState((items[0].children && items[0].children[0].id) || '*');
 
 
     const handleForms = (id) => {
@@ -89,7 +89,7 @@ function FormList() {
         <div className={classes.root}>
             {/*LEFT*/}
             <div className={classes.tree}>
-                <TreeNav items={items} onHandle={handleForms}/>
+                <TreeNav items={items} onHandle={handleForms} />
             </div>
             {/*RIGHT*/}
             <div className={classes.formlist}>
@@ -108,21 +108,21 @@ function FormList() {
                         </TableRow>
                     </TableHead>
                     <TableBody>
-                        {rows.filter(data=>data.groupid === group).map(row => {
+                        {rows.filter(data => data.groupid === group).map(row => {
                             return (
-                                <TableRow hover  tabIndex={-1} key={row.id}>
+                                <TableRow hover tabIndex={-1} key={row.id}>
                                     {columns.map(column => {
                                         const value = row[column.id];
                                         return (
                                             <TableCell key={column.id} align={column.align}>
                                                 {
-                                                    (column.id==="formname" && 
-                                                    <NavLink to={`/app/view?formid=${row.formid}`} className={classes.link}>
-                                                        {column.format && typeof value === 'number' ? column.format(value) : value}
-                                                    </NavLink>
+                                                    (column.id === "formname" &&
+                                                        <NavLink to={`/app/view?formid=${row.formid}`} className={classes.link}>
+                                                            {column.format && typeof value === 'number' ? column.format(value) : value}
+                                                        </NavLink>
                                                     ) || (column.format && typeof value === 'number' ? column.format(value) : value)
                                                 }
-                                                </TableCell>
+                                            </TableCell>
                                         );
                                     })}
                                 </TableRow>
@@ -131,7 +131,7 @@ function FormList() {
                     </TableBody>
                 </Table>
             </div>
-            
+
         </div>
     );
 }

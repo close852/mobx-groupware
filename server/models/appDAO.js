@@ -26,7 +26,7 @@ let findAppById = async (app_id) => {
  */
 const findAllTodoList = (user_id) => {
     let sql = ` SELECT * FROM V_TODOLIST WHERE curr_user_id = ? `;
-    let args = [user_id ];
+    let args = [user_id];
     try {
         return db.query(sql, args).catch(err => err);
     } catch (err) {
