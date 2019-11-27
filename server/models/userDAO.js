@@ -72,7 +72,10 @@ const updateDynamicUser = async (args, userId) => {
 }
 
 const findUserByDeptId = ({ id }) => {
-    let sql = `SELECT * FROM USER WHERE DEPT_ID = ?`;
+    let sql = ` SELECT user_id, login_id, password, username,u.dept_id,d.deptname 
+                FROM USER u, DEPT d  
+                WHERE u.dept_id = d.dept_id 
+                AND u.DEPT_ID = ? `;
     let args = [id];
     try {
         return db.query(sql, args).catch(err => err);

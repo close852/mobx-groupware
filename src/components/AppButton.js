@@ -7,7 +7,7 @@ function AppButton({ appLine, setAppLine }) {
         root: {
             width: `100%`,
             // align: 'center',
-            backgroundColor: "#ffcc00"
+            backgroundColor: "#ffcc00",
         },
     }));
     const [open, setOpen] = useState(false);
@@ -26,7 +26,7 @@ function AppButton({ appLine, setAppLine }) {
             <Button style={{ border: "1px solid black" }} size="small">수신처지정</Button>
             <Button style={{ border: "1px solid black", backgroundColor: "gray", color: "white" }} size="small">상신</Button>
             <Button style={{ border: "1px solid black", align: "right" }} size="small">미리보기</Button>
-            <AppLineSelect open={open} handleClose={handleClose} />
+            <AppLineSelect open={open} handleClose={handleClose} appLine={appLine} setAppLine={setAppLine} />
         </div>
     )
 }

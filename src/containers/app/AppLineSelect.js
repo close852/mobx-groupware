@@ -82,6 +82,25 @@ const useStyles = makeStyles(theme => ({
         border: '1px solid darkgray',
         marginBottom: '2px',
     },
+    lineStyle: {
+        width: '100%',
+        display: 'flex',
+    },
+    lineItem5: {
+        width: '5%'
+    },
+    lineItem10: {
+        width: '10%'
+    },
+    lineItem15: {
+        width: '15%'
+    },
+    lineItem20: {
+        width: '20%'
+    },
+    lineItem25: {
+        width: '25%'
+    },
 }));
 
 export default function AppLineSelect({ open, handleClose, appLine, setAppLine }) {
@@ -120,9 +139,10 @@ export default function AppLineSelect({ open, handleClose, appLine, setAppLine }
             setUserData(res.data);
         })
 
-    }, [getUserData, setUserData]);
+    }, [getUserData]);
     useEffect(() => {
-        if (appLine) {
+        console.log('appLine', appLine);
+        if (appLine && appLine.length > 0) {
             setLineData(...appLine)
         }
     }, [appLine]);
@@ -168,15 +188,20 @@ export default function AppLineSelect({ open, handleClose, appLine, setAppLine }
     ))
     const userDataMap = userData.map(user => (
         <div draggable={"true"} id={user.user_id} onDragOver={dragOverUserHandler} onDragStart={dragUserData}
-            data-info={`{ "userid": "${user.user_id}", "username":"${user.username}" }`}>
+            data-info={`{"userid":"${user.user_id}", "username":"${user.username}", "deptid":"${user.dept_id}", "deptname":"${user.deptname}"}`}>
             <input type="checkbox" id={"chk"} value="1" />
             {user.username}
         </div>
     ))
 
     const lineDataMap = lineData.map(info => (
-        <div>
-            {info.userid} /결재/ {info.username}
+        <div className={classes.lineStyle}>
+            <div className={classes.lineItem5}><input type="checkbox" value={info.userid} /></div>
+            <div className={classes.lineItem25}>결재/합의</div>
+            <div className={classes.lineItem25}>{info.username}</div>
+            <div className={classes.lineItem25}>{info.deptname}</div>
+            <div className={classes.lineItem15}>대기</div>
+            <div className={classes.lineItem5}>▤</div>
         </div>
     ));
 
@@ -212,9 +237,11 @@ export default function AppLineSelect({ open, handleClose, appLine, setAppLine }
                             <Button>합의></Button>
                             <Button>{"<"}삭제</Button>
                         </div>
-                        <div className={classes.rightMenu} onDrop={dropHandler} onDragOver={dragOverLineHandler}>
+                        <div className={classes.rightMenu} onDrop={dropHandler} onDragOver={dragOverLineHandler} >
                             오른쪽영역
-                            {lineDataMap}
+                            <div>
+                                {lineDataMap}
+                            </div>
                         </div>
                     </div>
                     <div className={classes.btnInc}>

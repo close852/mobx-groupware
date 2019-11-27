@@ -4,6 +4,7 @@ import proc from '../framework/appProcess'
 import {
     requireRole
 } from '../utils/roleUtils'
+import { uuid } from '../utils/uuidUtils'
 
 const router = express.Router();
 
@@ -11,18 +12,43 @@ router.post('/draft', async (req, res) => {
     const {
         title,
         content,
-        upappid
+        appLine,
+        docno,
+        user_id,
+        dept_id,
+        nexturl,
+        makedate,
+        opinion,
+        cur_taskno,
+        cur_sortno,
     } = req.body;
+    let {
+        appId,
+    } = req.body;
+    console.log('... req.body>>>', req.body)
+    const jsonLine = JSON.parse(appLine);
+    console.log(jsonLine[1])
 
-    const lineData = [
-        {
-            userid: '2',
-            appid: 'test'
-        }
-    ]
-    proc.draftProcess();
+    if (appId) {
+        // copy기안 또는 redraft, 결재 진행상태 확인 하고 처리진행
+    }
+    appId = uuid();
+    const appVO = {
+        title,
+        content,
+        appLine: jsonLine,
+        docno,
+        user_id,
+        dept_id,
+        makedate,
+        appId,
+        opinion,
+        cur_taskno,
+        cur_sortno,
+    }
+    proc.draftProcess(appVO);
 
-    res.send({ data: '123' })
+    res.send({ data: '123', nexturl })
 })
 
 router.post('/app', (req, res) => {

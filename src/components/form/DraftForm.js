@@ -197,7 +197,6 @@ function DraftForm({ history, location, match, appId }) {
         <div >
             <form id="bbsForm" name="bbsForm" onSubmit={handleSubmit} >
                 <input type="hidden" id="nexturl" name="nexturl" value={`/bbs/list/${bbsId}`} />
-                <input type="hidden" id="article_id" name="article_id" value={articleId} />
                 <input type="hidden" id="user_id" name="user_id" value={userId} />
                 <input type="hidden" id="dept_id" name="dept_id" value={deptId} />
                 <input type="hidden" id="content" name="content" value={content} />
@@ -245,8 +244,8 @@ function DraftForm({ history, location, match, appId }) {
                             }}
                         />
                         <TextField
-                            id="deptDisp"
-                            name="deptDisp"
+                            id="makedate"
+                            name="makedate"
                             label="기안일"
                             value={moment().format("YYYY-MM-DD")}
                             className={classes.textFieldInput}
