@@ -1,68 +1,73 @@
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+<p align="center">
+  <a href="https://example.com/">
+    <img src="https://via.placeholder.com/72" alt="Logo" width=72 height=72>
+  </a>
+  <h3 align="center">MOBX-GROUPWARE</h3>
+  <p align="center">
+    전자결재 세미 프로젝트
+    <!-- <br> -->
+    <!-- <a href="https://reponame/issues/new?template=bug.md">Report bug</a> -->
+    <!-- · -->
+    <!-- <a href="https://reponame/issues/new?template=feature.md&labels=feature">Request feature</a> -->
+  </p>
+</p>
 
-## Available Scripts
 
-In the project directory, you can run:
+## 목차
 
-### `yarn start`
+- [개발환경](#개발환경)
+- [기능소개](#기능소개)
+- [개발일정(WBS)](#개발일정)
+- [DB 스키마](#DB Schema)
+- [프로세스 흐름도](#프로세스흐름도)
+- [프로젝트 UI](#UI)
 
-Runs the app in the development mode.<br />
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
 
-The page will reload if you make edits.<br />
-You will also see any lint errors in the console.
+## 개발환경
 
-### `yarn test`
+Some text
 
-Launches the test runner in the interactive watch mode.<br />
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+- Instruction 1
+- Instruction 2
+- Instruction 3
 
-### `yarn build`
+## 기능소개
 
-Builds the app for production to the `build` folder.<br />
-It correctly bundles React in production mode and optimizes the build for the best performance.
+Here goes all the budgets
 
-The build is minified and the filenames include the hashes.<br />
-Your app is ready to be deployed!
+## 개발일정
+wbs text
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+## DB Schema
 
-### `yarn eject`
+Some text
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+```text
+folder1/
+└── folder2/
+    ├── folder3/
+    │   ├── file1
+    │   └── file2
+    └── folder4/
+        ├── file3
+        └── file4
+```
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+## 프로세스흐름도
 
-Instead, it will copy all the configuration files and the transitive dependencies (Webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+Have a bug or a feature request? Please first read the [issue guidelines](https://reponame/blob/master/CONTRIBUTING.md) and search for existing and closed issues. If your problem or idea is not addressed yet, [please open a new issue](https://reponame/issues/new).
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
+## UI
 
-## Learn More
+Please read through our [contributing guidelines](https://reponame/blob/master/CONTRIBUTING.md). Included are directions for opening issues, coding standards, and notes on development.
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+Moreover, all HTML and CSS should conform to the [Code Guide](https://github.com/mdo/code-guide), maintained by [Main author](https://github.com/usernamemainauthor).
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+Editor preferences are available in the [editor config](https://reponame/blob/master/.editorconfig) for easy use in common text editors. Read more and download plugins at <https://editorconfig.org/>.
 
-### Code Splitting
 
-This section has moved here: https://facebook.github.io/create-react-app/docs/code-splitting
+## Copyright and license
 
-### Analyzing the Bundle Size
+Code and documentation copyright 2011-2018 the authors. Code released under the [MIT License](https://reponame/blob/master/LICENSE).
 
-This section has moved here: https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size
-
-### Making a Progressive Web App
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app
-
-### Advanced Configuration
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/advanced-configuration
-
-### Deployment
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/deployment
-
-### `yarn build` fails to minify
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify
+Enjoy :metal:
