@@ -4,7 +4,7 @@
   </a>
   <h3 align="center">MOBX-GROUPWARE</h3>
   <p align="center">
-    전자결재 세미 프로젝트
+    React-MobX 전자결재 프로젝트
     <!-- <br> -->
     <!-- <a href="https://reponame/issues/new?template=bug.md">Report bug</a> -->
     <!-- · -->
@@ -53,7 +53,7 @@ folder1/
         └── file4
 ```
 
-## 프로세스-흐름도
+## 프로세스 흐름도
 
 Have a bug or a feature request? Please first read the [issue guidelines](https://reponame/blob/master/CONTRIBUTING.md) and search for existing and closed issues. If your problem or idea is not addressed yet, [please open a new issue](https://reponame/issues/new).
 
