@@ -1,14 +1,8 @@
 <p align="center">
-  <a href="https://example.com/">
-    <img src="https://via.placeholder.com/72" alt="Logo" width=72 height=72>
-  </a>
+  <img src="https://github.com/close852/mobx-groupware/blob/master/readme/logo192.png?raw=true" alt="Logo" width=72 height=72>
   <h3 align="center">MOBX-GROUPWARE</h3>
   <p align="center">
     React-MobX 전자결재 프로젝트
-    <!-- <br> -->
-    <!-- <a href="https://reponame/issues/new?template=bug.md">Report bug</a> -->
-    <!-- · -->
-    <!-- <a href="https://reponame/issues/new?template=feature.md&labels=feature">Request feature</a> -->
   </p>
 </p>
 
