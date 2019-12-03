@@ -13,13 +13,13 @@
 - [기능소개](#기능소개)
 - [개발일정(WBS)](#개발일정)
 - [DB 스키마](#DB-Schema)
+- [프로젝트 구조](#프로젝트-구조)
 - [프로세스 흐름도](#프로세스-흐름도)
 - [프로젝트 UI](#UI)
 
 
 ## 개발환경
-
-Some text
+window, nodejs(express) reactjs , mobx, VS Code
 
 - Instruction 1
 - Instruction 2
@@ -27,12 +27,15 @@ Some text
 
 ## 기능소개
 
-Here goes all the budgets
+전체적인 프로젝트 소개(WBS 전에 페이지별 소개)
 
 ## 개발일정
-wbs text
+wbs 이미지 삽입
 
 ## DB Schema
+ -DB 스키마 이미 삽입
+
+## 프로젝트 구조
 
 Some text
 
@@ -48,20 +51,10 @@ folder1/
 ```
 
 ## 프로세스 흐름도
-
-Have a bug or a feature request? Please first read the [issue guidelines](https://reponame/blob/master/CONTRIBUTING.md) and search for existing and closed issues. If your problem or idea is not addressed yet, [please open a new issue](https://reponame/issues/new).
+1. 전자결재 흐름도
 
 ## UI
 
-Please read through our [contributing guidelines](https://reponame/blob/master/CONTRIBUTING.md). Included are directions for opening issues, coding standards, and notes on development.
+1. 기능별 이미지 정리
 
-Moreover, all HTML and CSS should conform to the [Code Guide](https://github.com/mdo/code-guide), maintained by [Main author](https://github.com/usernamemainauthor).
-
-Editor preferences are available in the [editor config](https://reponame/blob/master/.editorconfig) for easy use in common text editors. Read more and download plugins at <https://editorconfig.org/>.
-
-
-## Copyright and license
-
-Code and documentation copyright 2011-2018 the authors. Code released under the [MIT License](https://reponame/blob/master/LICENSE).
-
-Enjoy :metal:
+## Thank you!
