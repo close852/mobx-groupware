@@ -18,8 +18,8 @@
 - [개발환경](#개발환경)
 - [기능소개](#기능소개)
 - [개발일정(WBS)](#개발일정)
-- [DB 스키마](#DB Schema)
-- [프로세스 흐름도](#프로세스흐름도)
+- [DB 스키마](#DB-Schema)
+- [프로세스 흐름도](#프로세스-흐름도)
 - [프로젝트 UI](#UI)
 
 
@@ -53,7 +53,7 @@ folder1/
         └── file4
 ```
 
-## 프로세스흐름도
+## 프로세스-흐름도
 
 Have a bug or a feature request? Please first read the [issue guidelines](https://reponame/blob/master/CONTRIBUTING.md) and search for existing and closed issues. If your problem or idea is not addressed yet, [please open a new issue](https://reponame/issues/new).
 
