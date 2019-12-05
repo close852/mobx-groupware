@@ -3,16 +3,11 @@ import appLineDAO from '../models/appLineDAO'
 import opinionDAO from '../models/opinionDAO'
 
 import { uuid } from '../utils/uuidUtils'
+import { now } from '../utils/dateUtils'
 
-//appVO = { appId, title, content, appLine, docno, user_id, dept_id, makedate }
-/*
-    기안시 처리방법
-    1. APP 테이블에 데이터 삽입
-    2. APP_LINE 테이블에 데이터 삽입
-    3. curLineUser정보 가져와서  appProcess 실행
-        -> appProcess에서 APP, APP_LINE, OPINION 정보 변경
-*/
-const draftProcess = async (appVO) => {
+
+//moment().format('YYYY/MM/DD HH:mm:ss')
+const makeAppInit = async ({ appVO, appLines }) => {
     console.log('draftProcess > ')
 
     // 기안시 필요한 처리
@@ -22,9 +17,26 @@ const draftProcess = async (appVO) => {
     //1. APP 테이블에 마스터 정보 insert
     await appDAO.insertApp(appVO);
     //2. AppLine(appid 필요) 테이블에 Line 정보 insert
+    console.log('appVO.jsonLine >>', appVO.appLine)
+    const lineData = appLines.map(line => ([
+        line.line_id,
+        appVO.appId,
+        line.auth_type,
+        line.userid,
+        line.taskno,
+        line.sortno,
+        line.action_type,
+        line.status,
+    ]));
+    await appLineDAO.insertAppLineBatch(lineData)
+
+    // return appVO;
+}
+
+const makeAppLine = (appVO) => {
     const arrLines = appVO.appLine;
     console.log('appVO.jsonLine >>', appVO.appLine)
-    const appLines = arrLines.map(line => ({
+    return arrLines.map(line => ({
         line_id: uuid(),
         app_id: appVO.appId,
         auth_type: line.auth_type,
@@ -34,35 +46,59 @@ const draftProcess = async (appVO) => {
         action_type: line.action_type,
         status: line.status,
     }));
-    //  sql: 'INSERT INTO APP_LINE (line_id, app_id,auth_type,auth_id, taskno, sortno, action_type, app_status)  VALUES (NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL)' }
-    appLines.forEach(appLine => {
-        console.log('appLine..', appLine)
-        appLineDAO.insertAppLine(appLine)
-    });
-
-
-    //4. todolist, inglist (appline 정보기준으로)미결 진행정보 insert
-
-    //5. 파일 처리 필요
-
-    appProcess({ appVO, appLines });
+}
+//appVO = { appId, title, content, appLine, docno, user_id, dept_id, makedate }
+/*
+    기안시 처리방법
+    1. APP 테이블에 데이터 삽입
+    2. APP_LINE 테이블에 데이터 삽입
+    3. curLineUser정보 가져와서  appProcess 실행
+        -> appProcess에서 APP, APP_LINE, OPINION 정보 변경
+*/
+const draftProcess = async (appVO) => {
+    const appLines = makeAppLine(appVO);
+    await makeAppInit({ appVO, appLines });
+    console.log('draftProcess > ')
+    await appProcess({ appVO, appLines });
+    const isEnd = false;
+    if (isEnd) {
+        endProcess();
+    }
 }
 
-const appProcess = ({ appVO, appLines }) => {
-
+const appProcess = async ({ appVO, appLines }) => {
     const curLineUser = appLines.filter(line => line.taskno === appVO.cur_taskno && line.sortno === appVO.cur_sortno)[0];
-    console.log('appVO.opinion,line_id', appVO.opinion, curLineUser)
+    console.log('appVO.opinion,line_id', appVO.opinion, curLineUser, curLineUser.line_id)
 
     console.log('appProcess > ')
     //결재시 필요한 처리
 
     //0. 결재 이미 처리됬는지 확인
+    const nextLineData = await appLineDAO.findNextLineData(curLineUser.line_id);
+
+
+    console.log('nextLineData >>>', nextLineData)
+    //status, cur_taskno, cur_sortno, app_id
+    const updateData = {
+        status: 'APP',
+        cur_taskno: nextLineData[0].taskno,
+        cur_sortno: nextLineData[0].sortno,
+        app_id: nextLineData[0].app_id,
+    }
+    console.log('>>>>> updateData :: ', updateData)
 
     //1. App 테이블에 마스터 정보 update
-    appDAO.updateAppStatusByAppId(appVO);
+    await appDAO.updateAppStatusByAppId(updateData);
 
+    //status, cur_taskno, cur_sortno, app_id
+    const updateLineData = {
+        status: 'SIGN',
+        line_id: curLineUser.line_id,
+        appdate: now(),
+    }
+    console.log('>>>>> updateLineData :: ', updateLineData)
     //2. AppLine 테이블에 Line정보 update
-    appLineDAO.updateAppLineStatusByLineId(curLineUser);
+    await appLineDAO.updateAppLineStatusByLineId(updateLineData);
 
     //3. AppOpinion 테이블에 의견정보 insert
     if (appVO.opinion) {
@@ -74,7 +110,7 @@ const appProcess = ({ appVO, appLines }) => {
             opinion: appVO.opinion,
         }
         console.log('curLineUser : ', opinion, '\n', curLineUser)
-        opinionDAO.insertOpinion(opinion);
+        await opinionDAO.insertOpinion(opinion);
     }
 
     //-- 파일 처리 없을듯

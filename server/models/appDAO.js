@@ -1,10 +1,10 @@
 import db from '../lib/db'
 
 //appVO = { appId, title, content, appLine, docno, user_id, dept_id, makedate }
-let insertApp = async ({ appId, docno, title, content, user_id, dept_id }) => {
+let insertApp = async ({ appId, docno, title, content, user_id, dept_id, cur_taskno, cur_sortno }) => {
     console.log('>>> insertApp ...')
-    let sql = `INSERT INTO APP (app_id,docno,title,content,status,draft_user_id,dept_id, created_user_id,updated_user_id)  VALUES (?,?,?,?,?,?,?,?,?)`;
-    let args = [appId, docno, title, content, 'ARRIVAL', user_id, dept_id, user_id, user_id];
+    let sql = `INSERT INTO APP (app_id,docno,title,content,status,draft_user_id,dept_id, created_user_id,updated_user_id, cur_taskno, cur_sortno)  VALUES (?,?,?,?,?,?,?,?,?,?,?)`;
+    let args = [appId, docno, title, content, 'ARRIVAL', user_id, dept_id, user_id, user_id, cur_taskno, cur_sortno];
     try {
         return db.query(sql, args).catch(err => err);
     } catch (err) {
@@ -12,7 +12,12 @@ let insertApp = async ({ appId, docno, title, content, user_id, dept_id }) => {
     }
 }
 
-const updateAppStatusByAppId = ({ status, cur_taskno, cur_sortno, app_id }) => {
+// status: 'APP',
+// cur_taskno: nextLineData[0].taskno,
+// cur_sortno: nextLineData[0].sortno,
+// app_id: appVO.app_id
+
+const updateAppStatusByAppId = async ({ status, cur_taskno, cur_sortno, app_id }) => {
     let sql = ` UPDATE APP 
                 SET STATUS=?, cur_taskno=? , cur_sortno=? 
                 WHERE APP_ID = ? `
