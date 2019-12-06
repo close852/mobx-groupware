@@ -51,10 +51,17 @@ router.post('/draft', async (req, res) => {
     res.send({ data: '123', nexturl })
 })
 
-router.post('/app', (req, res) => {
-
-    proc.appProcess();
-
+router.post('/sign', (req, res) => {
+    /*
+        const {
+            app_id,
+            line_id,
+            user_id,
+            opinion
+        } = req.body;
+    */
+    proc.appProcess(req.body);
+    // app_id, user_id, line_id, opinion
     res.send({ data: '123' })
 
 })

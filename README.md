@@ -40,14 +40,29 @@ wbs 이미지 삽입
 Some text
 
 ```text
-folder1/
-└── folder2/
-    ├── folder3/
-    │   ├── file1
-    │   └── file2
-    └── folder4/
-        ├── file3
-        └── file4
+
+server/ [BACKEND]
+├── config/
+├── framework/
+├── lib/
+├── logs/
+├── models/
+├── public/
+├── routes/
+├── utils/
+└── main.js
+
+src/ [FRONTEND]
+├── components/
+│   ├── editor/
+│   ├── file/
+│   └── form/
+├── containers/
+│   └── app/
+├── stores/
+├── App.js
+└── index.js
+
 ```
 
 ## 프로세스 흐름도

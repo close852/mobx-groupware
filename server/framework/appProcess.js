@@ -17,17 +17,19 @@ const makeAppInit = async ({ appVO, appLines }) => {
     //1. APP 테이블에 마스터 정보 insert
     await appDAO.insertApp(appVO);
     //2. AppLine(appid 필요) 테이블에 Line 정보 insert
-    console.log('appVO.jsonLine >>', appVO.appLine)
+    console.log('appVO.jsonLine >>', appLines)
     const lineData = appLines.map(line => ([
         line.line_id,
         appVO.appId,
         line.auth_type,
-        line.userid,
+        line.auth_id,
         line.taskno,
         line.sortno,
         line.action_type,
         line.status,
     ]));
+
+    console.log('lineData >>>', lineData);
     await appLineDAO.insertAppLineBatch(lineData)
 
     // return appVO;
@@ -47,6 +49,10 @@ const makeAppLine = (appVO) => {
         status: line.status,
     }));
 }
+const makeAppData = () => {
+
+}
+
 //appVO = { appId, title, content, appLine, docno, user_id, dept_id, makedate }
 /*
     기안시 처리방법
@@ -59,46 +65,7 @@ const draftProcess = async (appVO) => {
     const appLines = makeAppLine(appVO);
     await makeAppInit({ appVO, appLines });
     console.log('draftProcess > ')
-    await appProcess({ appVO, appLines });
-    const isEnd = false;
-    if (isEnd) {
-        endProcess();
-    }
-}
-
-const appProcess = async ({ appVO, appLines }) => {
-    const curLineUser = appLines.filter(line => line.taskno === appVO.cur_taskno && line.sortno === appVO.cur_sortno)[0];
-    console.log('appVO.opinion,line_id', appVO.opinion, curLineUser, curLineUser.line_id)
-
-    console.log('appProcess > ')
-    //결재시 필요한 처리
-
-    //0. 결재 이미 처리됬는지 확인
-    const nextLineData = await appLineDAO.findNextLineData(curLineUser.line_id);
-
-
-    console.log('nextLineData >>>', nextLineData)
-    //status, cur_taskno, cur_sortno, app_id
-    const updateData = {
-        status: 'APP',
-        cur_taskno: nextLineData[0].taskno,
-        cur_sortno: nextLineData[0].sortno,
-        app_id: nextLineData[0].app_id,
-    }
-    console.log('>>>>> updateData :: ', updateData)
-
-    //1. App 테이블에 마스터 정보 update
-    await appDAO.updateAppStatusByAppId(updateData);
-
-    //status, cur_taskno, cur_sortno, app_id
-    const updateLineData = {
-        status: 'SIGN',
-        line_id: curLineUser.line_id,
-        appdate: now(),
-    }
-    console.log('>>>>> updateLineData :: ', updateLineData)
-    //2. AppLine 테이블에 Line정보 update
-    await appLineDAO.updateAppLineStatusByLineId(updateLineData);
+    // await appProcess({ appVO, appLines });
 
     //3. AppOpinion 테이블에 의견정보 insert
     if (appVO.opinion) {
@@ -106,18 +73,69 @@ const appProcess = async ({ appVO, appLines }) => {
             opinion_id: uuid(),
             user_id: appVO.user_id,
             app_id: appVO.appId,
-            line_id: curLineUser.line_id,
+            line_id: appLines[0].line_id,
             opinion: appVO.opinion,
         }
-        console.log('curLineUser : ', opinion, '\n', curLineUser)
+        console.log('curLineUser : ', opinion)
         await opinionDAO.insertOpinion(opinion);
     }
 
-    //-- 파일 처리 없을듯
+    const isLastSign = await signProcess(appVO.appId);
 
-    //6. 후처리 존재시, 후처리
+    console.log('isLastSign >>> ', isLastSign)
+    if (isLastSign) {
+        endProcess(appVO.appId);
+    }
+
+    afterProcess();
+}
+const afterProcess = () => {
 
 }
+
+const signProcess = async (appId) => {
+    // const appData = await appDAO.findAppById(appId)[0];
+    // const appLineData = await appLineDAO.findAppLineByLineId(lineId)[0];
+
+    console.log('signProcess >> ')
+    // ({ appId, appStatus, lineStatus, appdate }
+    const updateData = {
+        appId,
+        appStatus: 'APP',
+        lineStatus: 'SIGN',
+        appdate: now()
+    }
+    console.log('signProcess : updateData > ', updateData)
+    return await updateAppStatus(updateData);
+
+}
+
+const appProcess = async ({ app_id, user_id, line_id, opinion }) => {
+
+    console.log('appProcess >>>> ')
+    const isLastSign = await signProcess(app_id);
+
+    //3. AppOpinion 테이블에 의견정보 insert
+    if (opinion) {
+        const opinionData = {
+            opinion_id: uuid(),
+            user_id: user_id,
+            app_id: app_id,
+            line_id: line_id,
+            opinion: opinion,
+        }
+        console.log('curLineUser : ', opinionData)
+        await opinionDAO.insertOpinion(opinionData);
+    }
+
+    console.log('isLastSign appProcess >>> ', isLastSign)
+    if (isLastSign) {
+        endProcess(app_id);
+    }
+
+
+}
+
 //협조 프로세스가 필요할지 모르겠긴함.
 const coopProcess = () => {
 
@@ -142,10 +160,19 @@ const coopProcess = () => {
 
 
 // 반려 프로세스
-const cancelProcess = () => {
+const cancelProcess = async (appId) => {
     console.log('cancelProcess > ')
     //반려시 필요한 처리
 
+    // ({ appId, appStatus, lineStatus, appdate }
+    const updateData = {
+        appId,
+        appStatus: 'CANCEL',
+        lineStatus: 'CANCEL',
+        appdate: now()
+    }
+    console.log('signProcess : updateData > ', updateData)
+    return await updateAppStatus(updateData);
     //1. App 테이블에 마스터 정보 update
 
     //2. AppLine 테이블에 Line정보 update
@@ -157,41 +184,67 @@ const cancelProcess = () => {
 }
 
 //완료 처리만 하는 프로세스
-const endProcess = ({ appVO, appLines }) => {
-    console.log('endProcess > ')
-    const curLineUser = appLines.filter(line => line.taskno === appVO.cur_taskno && line.sortno === appVO.cur_sortno)[0];
+const endProcess = async (appId) => {
 
-    //결재완료시 필요한 처리
-    //문서번호 채번
-    //1. App 테이블에 마스터 정보 update
-    appDAO.updateAppStatusByAppId(appVO);
+    console.log('endProcess >> ')
 
-    //2. AppLine 테이블에 Line정보 update
-    appLineDAO.updateAppLineStatusByLineId(curLineUser);
-
-    //3. AppOpinion 테이블에 의견정보 insert
-    if (appVO.opinion) {
-        const opinion = {
-            opinion_id: uuid(),
-            user_id: appVO.user_id,
-            app_id: appVO.appId,
-            line_id: curLineUser.line_id,
-            opinion: appVO.opinion,
-        }
-        console.log('curLineUser : ', opinion, '\n', curLineUser)
-        opinionDAO.insertOpinion(opinion);
-    }
-    //3. todoList, ingList delete 하고, endList insert
-
-    //4. 수신처 처리
+    //App update
+    //AppLine Update
+    //문서대장에 넣기, 수신처에 보내기
 
     //5. 결재완료 후 처리
+    afterProcess();
+}
+
+
+const updateAppStatus = async ({ appId, appStatus, lineStatus, appdate }) => {
+    const curLineUser = await appLineDAO.findCurLineData(appId);
+
+    console.log('curLineUser??? appdate', curLineUser, appdate)
+    //TODO 병렬합의 처리 별도 필요......
+    const nextLineData = await appLineDAO.findNextLineData(curLineUser[0].line_id);
+
+    const isLastSign = !(nextLineData && nextLineData.length);
+    console.log('curLineUser >>>', curLineUser[0])
+    console.log('nextLineData >>>', nextLineData)
+    //status, cur_taskno, cur_sortno, app_id
+
+    let taskno = 1;
+    let sortno = 1;
+    if (!isLastSign) {
+        taskno = nextLineData[0].taskno;
+        sortno = nextLineData[0].sortno;
+    }
+    const updateData = {
+        status: appStatus,
+        cur_taskno: taskno,
+        cur_sortno: sortno,
+        app_id: appId,
+        appdate: appdate,
+    }
+    console.log('>>>>> updateData :: ', updateData)
+
+    //1. App 테이블에 마스터 정보 update
+    await appDAO.updateAppStatusByAppId(updateData);
+
+    //status, cur_taskno, cur_sortno, app_id
+    const updateLineData = {
+        status: lineStatus,
+        line_id: curLineUser[0].line_id,
+        appdate: appdate,
+    }
+    console.log('>>>>> updateLineData :: ', updateLineData)
+    //2. AppLine 테이블에 Line정보 update
+    await appLineDAO.updateAppLineStatusByLineId(updateLineData);
+
+    return isLastSign;
 }
 
 export default ({
     draftProcess,
     appProcess,
     coopProcess,
+    signProcess,
     cancelProcess,
     endProcess,
 });

@@ -32,9 +32,9 @@ let insertAppLineBatch = (appLines) => {
         return err;
     }
 }
-let findAppById = async (app_id) => {
-    let sql = `SELECT * FROM APP WHERE app_id = ?`;
-    let args = [app_id];
+let findAppLineByLineId = async (lineId) => {
+    let sql = `SELECT * FROM APP_LINE WHERE line_id = ?`;
+    let args = [lineId];
 
     try {
         return db.query(sql, args).catch(err => err);
@@ -55,7 +55,7 @@ const updateAppLineStatusByLineId = ({ status, appdate, line_id }) => {
     }
 }
 
-const findNextLineData = (line_id) => {
+const findNextLineData = async (line_id) => {
     let sql = ` SELECT * FROM APP_LINE WHERE (app_id, taskno, sortno) in (select app_id, taskno, sortno+1 from app_line where line_id = ?) `;
     sql += ` UNION `;
     sql += ` SELECT * FROM APP_LINE WHERE (app_id, taskno, sortno) in (select app_id, taskno+1, sortno from app_line where line_id = ?) `;
@@ -69,10 +69,37 @@ const findNextLineData = (line_id) => {
         return err;
     }
 }
+
+const findPrevLineData = async (line_id) => {
+    let sql = ` SELECT * FROM APP_LINE WHERE (app_id, taskno, sortno) in (select app_id, taskno, sortno-1 from app_line where line_id = ?) `;
+
+    let args = [line_id, line_id];
+
+    try {
+        return db.query(sql, args).catch(err => err);
+    } catch (err) {
+        return err;
+    }
+}
+
+
+const findCurLineData = async (appId) => {
+    let sql = ` SELECT * FROM APP_LINE WHERE (app_id, taskno, sortno) in (select app_id, cur_taskno, cur_sortno from app where app_id = ?) `;
+
+    let args = [appId];
+
+    try {
+        return await db.query(sql, args).catch(err => err);
+    } catch (err) {
+        return err;
+    }
+}
 export default ({
-    findAppById,
+    findAppLineByLineId,
     insertAppLine,
     insertAppLineBatch,
     updateAppLineStatusByLineId,
+    findCurLineData,
     findNextLineData,
+    findPrevLineData,
 })
