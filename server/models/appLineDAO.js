@@ -71,6 +71,7 @@ const findNextLineData = async (line_id) => {
 }
 
 const findPrevLineData = async (line_id) => {
+    
     let sql = ` SELECT * FROM APP_LINE WHERE (app_id, taskno, sortno) in (select app_id, taskno, sortno-1 from app_line where line_id = ?) `;
 
     let args = [line_id, line_id];
