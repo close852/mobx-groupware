@@ -44,7 +44,7 @@ let findAppById = async (app_id) => {
  * 미결문서함
  */
 const findAllTodoList = (user_id) => {
-    let sql = ` SELECT * FROM V_TODOLIST WHERE curr_user_id = ? `;
+    let sql = ` SELECT * FROM V_TODOLIST WHERE auth_id = ? `;
     let args = [user_id];
     try {
         return db.query(sql, args).catch(err => err);

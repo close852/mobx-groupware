@@ -83,6 +83,21 @@ const findUserByDeptId = ({ id }) => {
         return err;
     }
 }
+
+const findUserListByTarget = ({ srchTarget, keyword }) => {
+
+    let sql = ` SELECT user_id, login_id, password, username,u.dept_id,d.deptname
+                FROM USER u, DEPT d  
+                WHERE u.dept_id = d.dept_id 
+                AND ${srchTarget} LIKE  CONCAT('%', ?, '%') `;
+    let args = [keyword];
+    try {
+        return db.query(sql, args).catch(err => err);
+    } catch (err) {
+        return err;
+    }
+
+}
 export default ({
     getUserById,
     insertUser,
@@ -91,4 +106,5 @@ export default ({
     updateUser,
     updateDynamicUser,
     findUserByDeptId,
+    findUserListByTarget
 })

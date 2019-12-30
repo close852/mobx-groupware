@@ -5,8 +5,10 @@ import Button from '@material-ui/core/Button';
 import Backdrop from '@material-ui/core/Backdrop';
 
 import { makeStyles } from '@material-ui/core/styles';
-import axios from 'axios'
 import { textAlign } from '@material-ui/system';
+
+import SearchBar from 'containers/SearchBar'
+import axios from 'axios'
 const useStyles = makeStyles(theme => ({
     root: {
         backgroundColor: theme.palette.background.paper,
@@ -112,6 +114,9 @@ export default function AppLineSelect({ open, handleClose, appLine, setAppLine }
     const [deptData, setDeptData] = useState([]);
     const [userData, setUserData] = useState([]);
     const [lineData, setLineData] = useState([]);
+    const [srchTarget, setSrchTarget] = useState('username');
+    const [keyword, setKeyword] = useState('');
+
 
     // const getArticleFetchUrl = useCallback(() => {
     //     return axios.get(`/api/article/${match.params.id}`);
@@ -220,7 +225,7 @@ export default function AppLineSelect({ open, handleClose, appLine, setAppLine }
                 }}
             >
                 <div className={classes.root}>
-                    <div className={classes.search}>검색영역</div>
+                    <div className={classes.search}><SearchBar srchTarget={srchTarget} setSrchTarget={setSrchTarget} keyword={keyword} setKeyword={setKeyword} /></div>
                     <div className={classes.body}>
                         <div className={classes.leftMenu}>
                             <div className={classes.deptClass} onDragOver={dragOverOrgHandler}>
