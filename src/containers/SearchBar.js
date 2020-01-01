@@ -4,7 +4,19 @@ import FormControl from '@material-ui/core/FormControl';
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
 import axios from 'axios'
-function SearchBar({ srchTarget, setSrchTarget, keyword, setKeyword }) {
+import { makeStyles } from '@material-ui/core/styles';
+
+const useStyles = makeStyles(theme => ({
+    root: {
+        display:'flex',
+        'alignItems': 'center',
+        'justifyContent': 'center',
+    },
+}));
+
+
+function SearchBar({ srchTarget, setSrchTarget, keyword, setKeyword, handleSearchData}) {
+    const classes = useStyles();
 
 
     const handleTargetChange = e => {
@@ -20,14 +32,16 @@ function SearchBar({ srchTarget, setSrchTarget, keyword, setKeyword }) {
         // axios.get('/api/org/find', formData).then(data => {
         console.log('srchTarget,keyword', srchTarget, keyword)
         axios.get(`/api/org/find?srchTarget=${srchTarget}&keyword=${keyword}`).then(res => {
-            console.log('data!! > ', res.data)
+            console.log('data!! > ', res,res.data)
+            handleSearchData(res.data)
         })
     }
     return (
-        <div>
-            <FormControl variant="outlined" >
+        <div className={classes.root}>
+            <FormControl >
                 <Select
                     native
+                    
                     id="srchTarget"
                     value={srchTarget}
                     onChange={handleTargetChange}
@@ -37,7 +51,7 @@ function SearchBar({ srchTarget, setSrchTarget, keyword, setKeyword }) {
                 </Select>
             </FormControl>
             &nbsp;
-            <TextField id="keyword" variant="outlined" value={keyword} onChange={handleKeywordChange} />
+            <TextField  id="keyword" margin="normal" value={keyword} onChange={handleKeywordChange} />
             <Button variant="contained" color="secondary" onClick={search}>검색</Button>
         </div>
     )

@@ -1,8 +1,14 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import Modal from '@material-ui/core/Modal';
 import Button from '@material-ui/core/Button';
+import PropTypes from 'prop-types';
 
 import Backdrop from '@material-ui/core/Backdrop';
+import Paper from '@material-ui/core/Paper';
+import Tabs from '@material-ui/core/Tabs';
+import Tab from '@material-ui/core/Tab';
+import Typography from '@material-ui/core/Typography';
+import Box from '@material-ui/core/Box';
 
 import { makeStyles } from '@material-ui/core/styles';
 import { textAlign } from '@material-ui/system';
@@ -18,6 +24,9 @@ const useStyles = makeStyles(theme => ({
         width: '700px',
         // height: '100%',
         minHeight: '700px'
+    },
+    tabRoot: {
+        height:'10px'        
     },
     modal: {
         display: 'flex',
@@ -103,6 +112,10 @@ const useStyles = makeStyles(theme => ({
     lineItem25: {
         width: '25%'
     },
+    noMoreData:{
+        display:'flex',
+        justifyContent: 'center',
+    }
 }));
 
 export default function AppLineSelect({ open, handleClose, appLine, setAppLine }) {
@@ -114,8 +127,39 @@ export default function AppLineSelect({ open, handleClose, appLine, setAppLine }
     const [deptData, setDeptData] = useState([]);
     const [userData, setUserData] = useState([]);
     const [lineData, setLineData] = useState([]);
+    const [searchData, setSearchData] = useState([]);
+
     const [srchTarget, setSrchTarget] = useState('username');
+    const [tabIdx,setTabIdx] = useState(0);
     const [keyword, setKeyword] = useState('');
+
+    const handleTabIdxChange = (event, idx) => {
+        setTabIdx(idx);
+      };
+    
+      function TabPanel(props) {
+        const { children, value, index, ...other } = props;
+      
+        return (
+          <Typography
+            component="div"
+            role="tabpanel"
+            hidden={value !== index}
+            id={`nav-tabpanel-${index}`}
+            aria-labelledby={`nav-tab-${index}`}
+            {...other}
+          >
+            {value === index && <Box p={3}>{children}</Box>}
+          </Typography>
+        );
+      }
+      
+      TabPanel.propTypes = {
+        children: PropTypes.node,
+        index: PropTypes.any.isRequired,
+        value: PropTypes.any.isRequired,
+      };
+      
 
 
     // const getArticleFetchUrl = useCallback(() => {
@@ -187,10 +231,24 @@ export default function AppLineSelect({ open, handleClose, appLine, setAppLine }
     }
     const deptDataMap = deptData.map(dept => (
         <div draggable={"true"} id={dept.dept_id} data-id={"123"} data-detail="123">
-            <input type="checkbox" id={"chk" + dept.dept_id} value="1" />
+            {/* <input type="checkbox" id={"chk" + dept.dept_id} value="1" /> */}
             {dept.deptname}
         </div>
     ))
+
+    const handleSearchData=(data)=>{
+        console.log('handleSearchData > ',data)
+            setSearchData(data);
+            setTabIdx(1);
+    }
+    const noMoreData =(<div className={classes.noMoreData}>데이터가 없습니다.</div>)
+    const searchDataMap = searchData.length>0?searchData.map(user =>(
+        <div draggable={"true"} id={user.user_id} onDragOver={dragOverUserHandler} onDragStart={dragUserData}
+            data-info={`{"userid":"${user.user_id}", "username":"${user.username}", "deptid":"${user.dept_id}", "deptname":"${user.deptname}"}`}>
+            <input type="checkbox" id={"chk"} value="1" />
+            {user.username}
+        </div>
+    )):(noMoreData);
     const userDataMap = userData.map(user => (
         <div draggable={"true"} id={user.user_id} onDragOver={dragOverUserHandler} onDragStart={dragUserData}
             data-info={`{"userid":"${user.user_id}", "username":"${user.username}", "deptid":"${user.dept_id}", "deptname":"${user.deptname}"}`}>
@@ -225,12 +283,27 @@ export default function AppLineSelect({ open, handleClose, appLine, setAppLine }
                 }}
             >
                 <div className={classes.root}>
-                    <div className={classes.search}><SearchBar srchTarget={srchTarget} setSrchTarget={setSrchTarget} keyword={keyword} setKeyword={setKeyword} /></div>
+                    <div className={classes.search}><SearchBar srchTarget={srchTarget} setSrchTarget={setSrchTarget} keyword={keyword} setKeyword={setKeyword} handleSearchData={handleSearchData}/></div>
                     <div className={classes.body}>
                         <div className={classes.leftMenu}>
                             <div className={classes.deptClass} onDragOver={dragOverOrgHandler}>
-                                조직도
-                                {deptDataMap}
+                                    <Tabs
+                                        value={tabIdx}
+                                        onChange={handleTabIdxChange}
+                                        indicatorColor="primary"
+                                        textColor="primary"
+                                        centered
+                                    >
+                                        <Tab label="조직도" style={{width:'100px'}}  {...{id : 'nav-tab-0','aria-controls': 'nav-tabpanel-0'}}/>
+                                        <Tab label="검색" style={{width:'100px'}}    {...{id : 'nav-tab-1','aria-controls': 'nav-tabpanel-1'}}/>
+                                    </Tabs>
+                                {/* {} */}
+                                <TabPanel value={tabIdx} index={0}>
+                                    {deptDataMap}
+                                </TabPanel>
+                                <TabPanel value={tabIdx} index={1}>
+                                    {searchDataMap}
+                                </TabPanel>
                             </div>
                             <div className={classes.userClass} >
                                 사용자영역

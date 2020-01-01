@@ -1,5 +1,5 @@
 import express from 'express'
-import java from 'java'
+// import java from 'java'
 
 const router = express.Router();
 const jarPath = __dirname + '\\lib\\cjhm-resource.jar';

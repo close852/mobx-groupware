@@ -14,8 +14,6 @@ router.get('/find', async (req, res) => {
 
     const data = await userDAO.findUserListByTarget({ srchTarget, keyword })
     console.log('/org/find', req.query)
-    res.send({
-        data: data
-    })
+    res.send(data)
 })
 export default router;
