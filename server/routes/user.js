@@ -100,6 +100,20 @@ router.get('/', requireRole("USER"), (req, res) => {
 })
 
 /**
+ * 사용자 조회
+ */
+router.get('/dept/:deptId', async (req, res) => {
+    const {
+        deptId
+    } = req.params;
+
+    console.log(req.params, req.body, req.params)
+    const deptData = await userDAO.findUserByDeptId({ deptId });
+
+    return res.json(deptData)
+
+})
+/**
  * 사용자 로그아웃
  */
 router.post('/logout', requireRole("USER"), (req, res) => {

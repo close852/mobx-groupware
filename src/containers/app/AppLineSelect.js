@@ -13,6 +13,9 @@ import Box from '@material-ui/core/Box';
 import { makeStyles } from '@material-ui/core/styles';
 import { textAlign } from '@material-ui/system';
 
+import Select from '@material-ui/core/Select';
+import MenuItem from '@material-ui/core/MenuItem';
+
 import SearchBar from 'containers/SearchBar'
 import axios from 'axios'
 const useStyles = makeStyles(theme => ({
@@ -26,7 +29,7 @@ const useStyles = makeStyles(theme => ({
         minHeight: '700px'
     },
     tabRoot: {
-        height:'10px'        
+        height: '10px'
     },
     modal: {
         display: 'flex',
@@ -112,9 +115,13 @@ const useStyles = makeStyles(theme => ({
     lineItem25: {
         width: '25%'
     },
-    noMoreData:{
-        display:'flex',
+    noMoreData: {
+        display: 'flex',
         justifyContent: 'center',
+    },
+    userInfo: {
+        display: 'flex',
+        justifyContent: 'space-between',
     }
 }));
 
@@ -130,36 +137,36 @@ export default function AppLineSelect({ open, handleClose, appLine, setAppLine }
     const [searchData, setSearchData] = useState([]);
 
     const [srchTarget, setSrchTarget] = useState('username');
-    const [tabIdx,setTabIdx] = useState(0);
+    const [tabIdx, setTabIdx] = useState(0);
     const [keyword, setKeyword] = useState('');
 
     const handleTabIdxChange = (event, idx) => {
         setTabIdx(idx);
-      };
-    
-      function TabPanel(props) {
+    };
+
+    function TabPanel(props) {
         const { children, value, index, ...other } = props;
-      
+
         return (
-          <Typography
-            component="div"
-            role="tabpanel"
-            hidden={value !== index}
-            id={`nav-tabpanel-${index}`}
-            aria-labelledby={`nav-tab-${index}`}
-            {...other}
-          >
-            {value === index && <Box p={3}>{children}</Box>}
-          </Typography>
+            <Typography
+                component="div"
+                role="tabpanel"
+                hidden={value !== index}
+                id={`nav-tabpanel-${index}`}
+                aria-labelledby={`nav-tab-${index}`}
+                {...other}
+            >
+                {value === index && <Box p={3}>{children}</Box>}
+            </Typography>
         );
-      }
-      
-      TabPanel.propTypes = {
+    }
+
+    TabPanel.propTypes = {
         children: PropTypes.node,
         index: PropTypes.any.isRequired,
         value: PropTypes.any.isRequired,
-      };
-      
+    };
+
 
 
     // const getArticleFetchUrl = useCallback(() => {
@@ -170,7 +177,7 @@ export default function AppLineSelect({ open, handleClose, appLine, setAppLine }
         return axios.get(`/api/dept/`);
     }, []);
     const getUserData = useCallback(() => {
-        return axios.get(`/api/dept/user/${deptId}`);
+        return axios.get(`/api/user/dept/${deptId}`);
     }, [deptId]);
 
     useEffect(() => {
@@ -216,6 +223,8 @@ export default function AppLineSelect({ open, handleClose, appLine, setAppLine }
         //grabbing
     }
     const dropHandler = (e) => {
+
+        //moveInfo
         let data = e.dataTransfer.getData("userInfo");
         const jsonInfo = JSON.parse(data);
         console.log('dropHandler', data, JSON.parse(data))
@@ -224,47 +233,93 @@ export default function AppLineSelect({ open, handleClose, appLine, setAppLine }
         e.preventDefault();
     }
 
+    const onClickUserData = (e) => {
+        const deptId = e.target.id;
+        axios.get(`/api/user/dept/${deptId}`).then(res => {
+            console.log('deptData', res.data)
+            setUserData(res.data);
+        })
+    }
     const dragUserData = (e) => {
         // e.preventDefault();
         console.log('dragUserData >', e.target.dataset.info)
         e.dataTransfer.setData('userInfo', e.target.dataset.info)
     }
+
+
+    const dragMoveUserData = (e) => {
+        // e.preventDefault();
+        console.log('dragUserData >', e.target.dataset.info)
+        e.dataTransfer.setData('moveInfo', e.target.dataset.info)
+    }
+
     const deptDataMap = deptData.map(dept => (
         <div draggable={"true"} id={dept.dept_id} data-id={"123"} data-detail="123">
             {/* <input type="checkbox" id={"chk" + dept.dept_id} value="1" /> */}
-            {dept.deptname}
+            <div onClick={onClickUserData} id={dept.dept_id}>{dept.deptname}</div>
         </div>
     ))
 
-    const handleSearchData=(data)=>{
-        console.log('handleSearchData > ',data)
-            setSearchData(data);
-            setTabIdx(1);
+    const handleSearchData = (data) => {
+        console.log('handleSearchData > ', data)
+        setSearchData(data);
+        setTabIdx(1);
     }
-    const noMoreData =(<div className={classes.noMoreData}>데이터가 없습니다.</div>)
-    const searchDataMap = searchData.length>0?searchData.map(user =>(
-        <div draggable={"true"} id={user.user_id} onDragOver={dragOverUserHandler} onDragStart={dragUserData}
-            data-info={`{"userid":"${user.user_id}", "username":"${user.username}", "deptid":"${user.dept_id}", "deptname":"${user.deptname}"}`}>
-            <input type="checkbox" id={"chk"} value="1" />
-            {user.username}
-        </div>
-    )):(noMoreData);
-    const userDataMap = userData.map(user => (
-        <div draggable={"true"} id={user.user_id} onDragOver={dragOverUserHandler} onDragStart={dragUserData}
-            data-info={`{"userid":"${user.user_id}", "username":"${user.username}", "deptid":"${user.dept_id}", "deptname":"${user.deptname}"}`}>
-            <input type="checkbox" id={"chk"} value="1" />
-            {user.username}
-        </div>
-    ))
 
-    const lineDataMap = lineData.map(info => (
-        <div className={classes.lineStyle}>
-            <div className={classes.lineItem5}><input type="checkbox" value={info.userid} /></div>
-            <div className={classes.lineItem25}>결재/합의</div>
+    const noMoreDataDiv = (<div className={classes.noMoreData}>데이터가 없습니다.</div>)
+
+    const makeUserData = (user, idx) => (
+        <div draggable={"true"} id={user.user_id} onDragOver={dragOverUserHandler} onDragStart={dragUserData}
+            data-info={`{"userid":"${user.user_id}", "username":"${user.username}", "deptid":"${user.dept_id}", "deptname":"${user.deptname}", "status":"${user.status || "APP"}"}`}
+            className={classes.userInfo}
+        >
+            {/*<input type="checkbox" id={"chk"} value="1" /> */}
+            <div>{idx + 1}</div>
+            <div>{user.username}</div>
+            <div>{user.login_id}</div>
+            <div>{user.deptname}</div>
+            <div> </div>
+        </div>
+    )
+
+    const searchDataMap = searchData.length > 0 ? searchData.map(makeUserData) : (noMoreDataDiv);
+    const userDataMap = userData.map(makeUserData)
+
+
+    const removeLine = (e) => {
+        console.log('e.target.id', e.target.value)
+        const data = lineData.filter((line, idx) => idx !== Number(e.target.id))
+        console.log('data >>> ', data)
+        setLineData(data);
+    }
+
+    const setStatus = (e, info, idx) => {
+        const status = e.target.value;
+        info['status'] = status;
+        setLineData([...lineData.slice(0, idx), info, ...lineData.slice(idx + 1)])
+    }
+    const lineDataMap = lineData.map((info, idx) => (
+        <div className={classes.lineStyle} >
+            {/*<div className={classes.lineItem5}><input type="checkbox" value={info.userid} /></div> */}
+            <div className={classes.lineItem5}><div onClick={removeLine} id={idx}>X</div></div>
+            <div className={classes.lineItem25}>
+                <Select
+                    value={info.status}
+                    onChange={(e) => { setStatus(e, info, idx) }}
+                >
+                    <MenuItem value="APP" >결재</MenuItem>
+                    <MenuItem value="COOP" >합의</MenuItem>
+                </Select>
+            </div>
             <div className={classes.lineItem25}>{info.username}</div>
             <div className={classes.lineItem25}>{info.deptname}</div>
             <div className={classes.lineItem15}>대기</div>
-            <div className={classes.lineItem5}>▤</div>
+            <div className={classes.lineItem5}
+                draggable={"true"}
+                onDragOver={dragOverUserHandler}
+                onDragStart={dragMoveUserData}
+                data-info={`{"userid":"${info.user_id}", "username":"${info.username}", "deptid":"${info.dept_id}", "deptname":"${info.deptname}", "status":"APP"}`}
+            >▤</div>
         </div>
     ));
 
@@ -283,20 +338,20 @@ export default function AppLineSelect({ open, handleClose, appLine, setAppLine }
                 }}
             >
                 <div className={classes.root}>
-                    <div className={classes.search}><SearchBar srchTarget={srchTarget} setSrchTarget={setSrchTarget} keyword={keyword} setKeyword={setKeyword} handleSearchData={handleSearchData}/></div>
+                    <div className={classes.search}><SearchBar srchTarget={srchTarget} setSrchTarget={setSrchTarget} keyword={keyword} setKeyword={setKeyword} handleSearchData={handleSearchData} /></div>
                     <div className={classes.body}>
                         <div className={classes.leftMenu}>
                             <div className={classes.deptClass} onDragOver={dragOverOrgHandler}>
-                                    <Tabs
-                                        value={tabIdx}
-                                        onChange={handleTabIdxChange}
-                                        indicatorColor="primary"
-                                        textColor="primary"
-                                        centered
-                                    >
-                                        <Tab label="조직도" style={{width:'100px'}}  {...{id : 'nav-tab-0','aria-controls': 'nav-tabpanel-0'}}/>
-                                        <Tab label="검색" style={{width:'100px'}}    {...{id : 'nav-tab-1','aria-controls': 'nav-tabpanel-1'}}/>
-                                    </Tabs>
+                                <Tabs
+                                    value={tabIdx}
+                                    onChange={handleTabIdxChange}
+                                    indicatorColor="primary"
+                                    textColor="primary"
+                                    centered
+                                >
+                                    <Tab label="조직도" style={{ width: '100px' }}  {...{ id: 'nav-tab-0', 'aria-controls': 'nav-tabpanel-0' }} />
+                                    <Tab label="검색" style={{ width: '100px' }}    {...{ id: 'nav-tab-1', 'aria-controls': 'nav-tabpanel-1' }} />
+                                </Tabs>
                                 {/* {} */}
                                 <TabPanel value={tabIdx} index={0}>
                                     {deptDataMap}
@@ -306,17 +361,15 @@ export default function AppLineSelect({ open, handleClose, appLine, setAppLine }
                                 </TabPanel>
                             </div>
                             <div className={classes.userClass} >
-                                사용자영역
                                 {userDataMap}
                             </div>
                         </div>
                         <div className={classes.actionBtn}>
-                            <Button>결재></Button>
+                            {/*<Button>결재></Button>
                             <Button>합의></Button>
-                            <Button>{"<"}삭제</Button>
+                            <Button>{"<"}삭제</Button>*/}
                         </div>
                         <div className={classes.rightMenu} onDrop={dropHandler} onDragOver={dragOverLineHandler} >
-                            오른쪽영역
                             <div>
                                 {lineDataMap}
                             </div>
